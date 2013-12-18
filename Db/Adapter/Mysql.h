@@ -1,8 +1,8 @@
 /*
  * Mysql.h
  *
- *  Created on: 2013Äê12ÔÂ18ÈÕ
- *      Author: ×£¾°·¨
+ *  Created on: 2013å¹´12æœˆ18æ—¥
+ *      Author: ç¥æ™¯æ³•
  */
 
 #ifndef DB_MYSQL_H_
