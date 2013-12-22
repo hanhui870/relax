@@ -4,7 +4,7 @@ CPP=g++
 server.test: Server.o
 	$(CPP) -o server.test Server.o -lboost_system
 client.test: Client.o
-	$(CPP) -o Client.test Server.o -lboost_system
+	$(CPP) -o client.test Client.o -lboost_system
 
 Server.o: Server.cpp
 	$(CPP) -c Server.cpp
