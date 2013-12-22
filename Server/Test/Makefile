@@ -1,11 +1,15 @@
 CPP=g++
 
 
-server.test:Server.o
-	$(CPP) -o server.test Server.o -lserver_linux-gcc-4.8.2_libmt
+server.test: Server.o
+	$(CPP) -o server.test Server.o -lboost_system
+client.test: Client.o
+	$(CPP) -o Client.test Server.o -lboost_system
 
-Server.o:Server.cpp
+Server.o: Server.cpp
 	$(CPP) -c Server.cpp
+Client.o: Client.cpp
+	$(CPP) -c Client.cpp
 
 clean:
-	rm Server.o server.test
+	rm Server.o server.test Client.o Client.test
