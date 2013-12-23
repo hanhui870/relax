@@ -1,0 +1,43 @@
+1、Nginx hello world输出 1万到水平：
+hanhui@Aspire:/biz/cdev/CHuiLib/Server/Test$ webbench -t 10 -c 500 http://localhost/
+Webbench - Simple Web Benchmark 1.5
+Copyright (c) Radim Kolar 1997-2004, GPL Open Source Software.
+
+Benchmarking: GET http://localhost/
+500 clients, running 10 sec.
+
+Speed=609882 pages/min, 2459276 bytes/sec.
+Requests: 101647 susceed, 0 failed.
+
+
+hanhui@Aspire:/biz/cdev/CHuiLib/Server/Test$ webbench -t 10 -c 1000 http://localhost/
+Webbench - Simple Web Benchmark 1.5
+Copyright (c) Radim Kolar 1997-2004, GPL Open Source Software.
+
+Benchmarking: GET http://localhost/
+1000 clients, running 10 sec.
+
+Speed=594258 pages/min, 2395872 bytes/sec.
+Requests: 99043 susceed, 0 failed.
+
+
+2、Boost Asio模型的：
+hanhui@Aspire:/biz/cdev/CHuiLib/Server/Test$ webbench -t 10 -c 500 http://localhost:95/test.txt
+Webbench - Simple Web Benchmark 1.5
+Copyright (c) Radim Kolar 1997-2004, GPL Open Source Software.
+
+Benchmarking: GET http://localhost:95/test.txt
+500 clients, running 10 sec.
+
+Speed=511182 pages/min, 655970 bytes/sec.
+Requests: 85197 susceed, 0 failed.
+
+hanhui@Aspire:/biz/cdev/CHuiLib/Server/Test$ webbench -t 10 -c 1000 http://localhost:95/test.txt
+Webbench - Simple Web Benchmark 1.5
+Copyright (c) Radim Kolar 1997-2004, GPL Open Source Software.
+
+Benchmarking: GET http://localhost:95/test.txt
+1000 clients, running 10 sec.
+
+Speed=519096 pages/min, 666157 bytes/sec.
+Requests: 86516 susceed, 0 failed.
