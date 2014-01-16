@@ -10,8 +10,12 @@ void echo(string name)
 }
 
 int main(int argc, char* argv[]){
-	string name="祝景法";
-	echo(name);
+	string name="GOGOGO";
+	cout<<name<< endl;
+
+	name="GOGOGOGOGOGOGOGOGOGOGOGOGOGOGOGOGOGO";
+	cout<<name<< endl;
+
 
 	return 0;
 }
