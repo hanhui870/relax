@@ -12,8 +12,15 @@ int main(int argc, char **argv){
 		return 1;
 	}
 
+	std::string key("hanhui99");
+
+	if(argc==2){
+		key=std::string(argv[1]);
+	}
+
 	std::string value;
-	status =db->Get(leveldb::ReadOptions(), "hanhui99", &value);
+	std::cout<<"fetch value for key:"<<key<<std::endl;
+	status =db->Get(leveldb::ReadOptions(), key, &value);
 	if(status.ok()){
 		std::cout<<"LevelDb hanhui's Value:"<<value<<std::endl;
 	}else{
