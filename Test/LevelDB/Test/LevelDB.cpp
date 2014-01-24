@@ -1,4 +1,7 @@
 #include <iostream>
+#include <cstdio>
+#include <cstring>
+#include <cstdlib>
 #include <leveldb/db.h>
 using namespace std;
 
@@ -7,7 +10,7 @@ int main(int argc, char **argv){
 	leveldb::Options options;
 	options.create_if_missing=true;
 
-	//指定的db.test是个目录
+	//db.test is a directory.
 	leveldb::Status status = leveldb::DB::Open(options, "db.test", &db);
 	if(!status.ok()){
 		std::cerr<< status.ToString()<<std::endl;
@@ -16,9 +19,14 @@ int main(int argc, char **argv){
 
 	std::string name("hanhui");
 	std::string key;
+	//writes 1M, 94 time costs:4.555s
 	for(int iter=0; iter<1000000; iter++){
-		key.append(name+static_cast<std::string>(iter));
-		db->Put(leveldb::WriteOptions(), name, "A good man!");
+		char temp[100];
+		std::sprintf(temp, "%d", iter);
+		//std::cout<<temp<<std::endl;
+		key.assign(name+temp);
+		//std::cout<<key<<std::endl;
+		db->Put(leveldb::WriteOptions(), key, key+temp+"A good man!");
 	}
 
 	delete db;

@@ -13,9 +13,11 @@ int main(int argc, char **argv){
 	}
 
 	std::string value;
-	status =db->Get(leveldb::ReadOptions(), "hanhui", &value);
+	status =db->Get(leveldb::ReadOptions(), "hanhui99", &value);
 	if(status.ok()){
 		std::cout<<"LevelDb hanhui's Value:"<<value<<std::endl;
+	}else{
+		std::cerr<< status.ToString()<<std::endl;
 	}
 	delete db;
 	return 0;
