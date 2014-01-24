@@ -19,7 +19,7 @@ int main(int argc, char **argv){
 
 	std::string name("hanhui");
 	std::string key;
-	//writes 1M, 94 time costs:4.555s
+	//writes 1M, 94 time costs:4.555s use diskspace 41M
 	for(int iter=0; iter<1000000; iter++){
 		char temp[100];
 		std::sprintf(temp, "%d", iter);
