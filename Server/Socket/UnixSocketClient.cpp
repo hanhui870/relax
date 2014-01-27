@@ -10,9 +10,7 @@ int main(int argc, char* argv[]){
 	const char* sockPath="/home/bruce/test/server.sock";
 	int socketFd;
 	const int backlog=10;
-	const int bufferSize=1000;
 	struct sockaddr_un address;
-	char buffer[bufferSize];
 
 	socketFd=socket(AF_UNIX, SOCK_STREAM, 0);
 	if(-1==socketFd){
@@ -25,7 +23,7 @@ int main(int argc, char* argv[]){
 	strncpy(address.sun_path, sockPath, sizeof(address.sun_path) - 1);
 
 	if(connect(socketFd, (struct sockaddr *)&address, sizeof(struct sockaddr_un))==-1){
-		cerr<<"failed to unix socket error."<<endl;
+		cerr<<"failed to unix connect socket."<<endl;
 		return -1;
 	}
 
@@ -34,14 +32,14 @@ int main(int argc, char* argv[]){
 
 	for( ; ; ){
 		cout<<"Please input some words to send:"<<endl;
+		string buffer;
 		getline(cin, buffer);
 
-		size_t len=0;
-		if((len=strlen(buffer))>0){
+		if(buffer.size()>0){
 			if(buffer=="exit"){
 				break;
 			}
-			write(socketFd, buffer, len);
+			write(socketFd, buffer.c_str(), buffer.size());
 		}
 	}
 
