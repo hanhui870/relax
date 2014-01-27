@@ -36,6 +36,8 @@ int main(int argc, char* argv[]){
 		return -1;
 	}
 
+	//cpp bool value is lower case.
+	bool status=true;
 	for( ; ; ){
 		int clientFd=accept(socketFd, NULL, NULL);
 		if(-1==clientFd){
@@ -49,7 +51,8 @@ int main(int argc, char* argv[]){
 			string a(buffer);
 			if(a=="exit"){
 				cout<<"Server terminated."<<endl;
-				goto end;
+				status=false;
+				break;
 			}
 			memset(buffer, 0, bufferSize);
 		}
@@ -58,9 +61,12 @@ int main(int argc, char* argv[]){
 			cerr<<"read error."<<endl;
 			return -1;
 		}
+
+		if(!status){
+			break;
+		}
 	}
 
-end:
 	close(socketFd);
 	//delete after use it
 	unlink(sockPath);
