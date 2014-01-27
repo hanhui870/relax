@@ -36,10 +36,12 @@ int main(int argc, char* argv[]){
 		getline(cin, buffer);
 
 		if(buffer.size()>0){
+			write(socketFd, buffer.c_str(), buffer.size());
+
 			if(buffer=="exit"){
+				cout<<"Client exit now. Notified server."<<endl;
 				break;
 			}
-			write(socketFd, buffer.c_str(), buffer.size());
 		}
 	}
 

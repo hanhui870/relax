@@ -23,7 +23,7 @@ int main(int argc, char* argv[]){
 	address.sun_family = AF_UNIX;
 	strncpy(address.sun_path, sockPath, sizeof(address.sun_path) - 1);
 
-	//We can¡¯t bind a socket to an existing pathname (bind() fails with the error EADDRINUSE).
+	//We can't bind a socket to an existing pathname (bind() fails with the error EADDRINUSE).
 	if(bind(socketFd, (struct sockaddr *)&address, sizeof(struct sockaddr_un))==-1){
 		cerr<<"bind socket address error."<<endl;
 		return -1;
@@ -46,6 +46,11 @@ int main(int argc, char* argv[]){
 		size_t numRead=0;
 		while((numRead=read(clientFd, buffer, bufferSize))>0){
 			cout<<"Server get:"<<buffer<<endl;
+			string a(buffer);
+			if(a=="exit"){
+				cout<<"Server terminated."<<endl;
+				goto end;
+			}
 			memset(buffer, 0, bufferSize);
 		}
 
@@ -55,6 +60,7 @@ int main(int argc, char* argv[]){
 		}
 	}
 
+end:
 	close(socketFd);
 	//delete after use it
 	unlink(sockPath);
