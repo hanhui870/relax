@@ -12,6 +12,8 @@ int main() {
 /**
  * Json encode benchmark测试。
  *
+ * 直接下载https://github.com/miloyip/rapidjson后，将include中的内容直接拷贝到系统头文件目录即可引用，是包含编译的
+ *
  * 第一次：循环放在局部函数内，1百万耗时0m0.984s。
  * 第二次：document初始化放循环外1千万耗时0m28.713s。有内存泄漏。
  *      rapidjson::Document d;放在循环内部泄漏解除。但是慢了挺多。1千万0m30.415s。
