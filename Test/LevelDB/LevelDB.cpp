@@ -20,6 +20,7 @@ int main(int argc, char **argv){
 	std::string name("hanhui");
 	std::string key;
 	//writes 1M, 94 time costs:4.555s use diskspace 41M
+	//公司I3/8G开发机 consts:8.843s use diskspace 41M 基于cygwin
 	for(int iter=0; iter<1000000; iter++){
 		char temp[100];
 		std::sprintf(temp, "%d", iter);
