@@ -2,7 +2,7 @@ CPP=g++
 
 
 Pthread.test:Pthread.o
-	$(CPP) -o Pthread.test Pthread.o -lhiredis
+	$(CPP) -o Pthread.test Pthread.o -lpthread
 
 Pthread.o:Pthread.cpp
 	$(CPP) -c Pthread.cpp -O3

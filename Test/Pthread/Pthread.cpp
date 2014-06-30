@@ -1,3 +1,4 @@
+#include<unistd.h>
 #include <pthread.h>
 #include <iostream>
 using namespace std;
@@ -10,7 +11,8 @@ int main(int argc, char* argv[]){
 
 	cout<<"Spawn a child process.\n"<<endl;
 	pid_t child=0;
-	if(child=fork()){//this is parent
+	child=fork();
+	if(child){//this is parent
 		cout<<"Created child process: "<<child<<endl;
 	}else{
 		cout<<"This is child process."<<endl;//child is 0
