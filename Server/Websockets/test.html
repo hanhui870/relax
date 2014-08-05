@@ -1,0 +1,24 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>websockets test</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+</head>
+<body>
+
+
+<script type="text/javascript">
+var exampleSocket = new WebSocket("ws://localhost:7681/", ["protocolOne", "protocolTwo"]);
+
+exampleSocket.onopen = function (event) {
+  exampleSocket.send("Here's some text that the server is urgently awaiting!"); 
+};
+
+exampleSocket.onmessage = function(event) {
+  var msg = JSON.parse(event.data);
+  console.log(msg);
+};
+</script>
+</body>
+</html>
