@@ -25,7 +25,9 @@ void printDistr(std::default_random_engine& dre) {
 //调用C的随机算法
 void printCRand() {
 	//如果seed相同每次随机产生的值相同
-	srand( static_cast<unsigned>(32432));
+	//srand( static_cast<unsigned>(32432));
+	//通过时间作为seed可以产生随机值
+	srand((unsigned) time(NULL));
 
 	for (int i = 0; i < 6; ++i) {
 		std::cout << "rand:" << rand() << std::endl;
