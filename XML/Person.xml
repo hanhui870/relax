@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<gjob:School xmlns:gjob="http://www.zjgsdx.com">
+	<gjob:Persons>
+		<gjob:Person>
+			<gjob:Name>hanhui</gjob:Name>
+			<gjob:Email>nathan@windsofstorm.net</gjob:Email>
+			<gjob:Company>Duomai.com</gjob:Company>
+			<gjob:Organisation>China</gjob:Organisation>
+			<gjob:Webpage>http://www.zjgsdx.com</gjob:Webpage>
+			<gjob:Snailmail>zjf@gmail.com</gjob:Snailmail>
+			<gjob:Phone>878787</gjob:Phone>
+		</gjob:Person>
+		<gjob:Person>
+			<gjob:Name>rose</gjob:Name>
+			<gjob:Email>rose@126.com</gjob:Email>
+			<gjob:Company>alipay.com</gjob:Company>
+			<gjob:Organisation>China</gjob:Organisation>
+			<gjob:Webpage>http://www.rose.com</gjob:Webpage>
+			<gjob:Snailmail>zjf@gmail.com</gjob:Snailmail>
+			<gjob:Phone>555678</gjob:Phone>
+		</gjob:Person>
+	</gjob:Persons>
+</gjob:School>
+
