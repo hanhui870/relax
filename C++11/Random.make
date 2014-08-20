@@ -6,7 +6,7 @@ Random.test:Random.o
 	$(CPP) -o Random.test Random.o  $(LIBS)
 
 Random.o:Random.cpp
-	$(CPP) -c Random.cpp -O3  $(CXXFLAGS)
+	$(CPP) -g -c Random.cpp -O3  $(CXXFLAGS)
 
 clean:
 	rm Random.o Random.test
