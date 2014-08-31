@@ -1,0 +1,43 @@
+现代编译器常见的编译过程: 
+        源文件－－>预处理－－>编译/优化－－>汇编－－>链接-->可执行文件      
+对于gcc而言，参数debug信息需要添加-g标记。
+
+eclipse中调试时，由于GDB使用的unix格式的路径，而eclipse使用的是windows路径，导致找不到匹配的代码， 需要手工设置： 
+In Eclipse in Preferences->C/C++->Debug->"Common Source Lookup Path" add new "Path Mapping".
+把linux的路径映射到windows的路径: 比如 /cygdrive/d/   映射成 D:\ 
+
+第一步预处理 
+       命令： gcc -o test.i -E test.c 
+             或者 cpp -o test.i test.c (这里cpp不是值c plus plus,而是the C Preprocessor) 
+       结果：  生成预处理后的文件test.i(可以打开后与预处理前进行比对，当然长度会吓你一跳)      
+       作用：  读取c源程序，对伪指令和特殊符号进行处理。包括宏，条件编译，包含的头文件，以及一些特殊符号。基本上是一个replace的过程。 
+
+第二步编译及优化 
+        命令:  gcc -o test.s -S test.i 
+             或者 /路径/cc1 -o test.s test.i 
+        结果： 生成汇编文件test.s(可打开后查看源文件生成的汇编码) 
+        作用：通过词法和语法分析，确认所有指令符合语法规则(否则报编译错),之后翻译成对应的中间码，在linux中被称为RTL(Register Transfer Language)，通常是平台无关的，这个过程也被称为编译前端。编译后端对RTL树进行裁减，优化，得到在目标机上可执行的汇编代码。gcc采用as 作为其汇编器，所以汇编码是AT&T格式的，而不是Intel格式，所以在用gcc编译嵌入式汇编时，也要采用AT&T格式。 
+
+第三步 汇编 
+        命令： gcc -o test.o -c test.s                或者 as -o test.o test.s 
+        结果:   生成目标机器指令文件test.o(可用objdump查看) 
+        作用:  把汇编语言代码翻译成目标机器指令, 用file test.o 可以看到test.o是一个
+relocatable的ELF文件，通常包含.text .rodata代码段和数据段。可用readelf -r test.o查看需要relocation的部分。 
+
+第四步 链接 
+        命令： gcc -o test test.o                或者 ld -o test test.o 
+        结果:   生成可执行文件test (可用objdump查看) 
+  
+        作用:  将在一个文件中引用的符号同在另外一个文件中该符号的定义链接起来，使得所有的这些目标文件链接成为一个能被操作系统加载到内存的执行体。(如果有不到的符号定义，或者重复定义等，会报链接错)。用file test 可以看到test是一个executable的ELF文件。 
+另外： 
+        当然链接的时候还会用到静态链接库，和动态连接库。静态库和动态库都是.o目标文件的集合。         
+
+		静态库: 
+        命令：ar -v -q test.a test.o         结果: 生成静态链接库test.a 
+        作用: 静态库是在链接过程中将相关代码提取出来加入可执行文件的库(即在链接的时候将函数的代码将从其所在地静态链接库中被拷贝到最终的可执行程序中)，ar只是将一些别的文件集合到一个文件中。可以打包，当然也可以解包。 
+         
+        动态库:   
+        命令:  gcc -shared test.so test.o
+             或者/PATH/collect2 -shared test.so test.o (省略若干参数)         结果:  生成动态连接库test.so 
+        作用: 动态库在链接时只创建一些符号表，而在运行的时候才将有关库的代码装入内存，映射到运行时相应进程的虚地址空间。如果出错，如找不到对应的.so文件，会在执行的时候报动态连接错(可用LD_LIBRARY_PATH指定路径)。用file test.so可以看到test.so是shared object的ELF文件。 
+         
