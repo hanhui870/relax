@@ -1,10 +1,10 @@
-all: hello.exe
+all: test.exe
 
 clean:
-    rm main.o hello.exe
+    rm test.o test.exe
 
-hello.exe: main.o
-    g++ -g -o hello main.o
+hello.exe: test.o
+    g++ -g -o test test.o
 
 main.o:
-    g++ -c -g main.cpp
+    g++ -c -g test.cpp
