@@ -1,10 +1,18 @@
-all: test.exe
+CPP=g++
+CXXFLAGS=-g
+LIBS=-L/usr/local/lib   -lgtest -lgtest_main
+LIBOBJECTS=algorithm.o test.o
+BINARY=test.exe
 
-clean:
-    rm test.o test.exe
+all: $(BINARY)
 
-hello.exe: test.o
-    g++ -g -o test test.o
+$(BINARY): $(LIBOBJECTS)
+	$(CPP) -o test.exe $(LIBOBJECTS) $(LIBS)
 
-main.o:
-    g++ -c -g test.cpp
+$(objects): %.o: %.c 
+	$(CPP) -c $(CXXFLAGS) $< -o $@ 
+	
+.PHONY:clean 
+clean: 
+	-rm $(LIBOBJECTS) $(BINARY)
+    
