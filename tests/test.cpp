@@ -1,6 +1,7 @@
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
+#include "test.h"
 
+int main(int argc, char ** argv){
+	std::cout<<"hello chuilib."<<std::endl;
 
+	return 0;
+}

@@ -27,3 +27,4 @@
 *.patch
 *.gcno
 *.stackdump
+*.log
