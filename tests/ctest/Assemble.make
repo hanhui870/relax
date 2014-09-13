@@ -2,7 +2,7 @@ CPP=gcc
 CFLAGS=-g
 LIBS=-L/usr/local/lib  
 
-Assemble.test:Assemble.o
+Assemble.exe:Assemble.o
 	$(CPP) -o Assemble.exe Assemble.o  $(LIBS)
 	
 Assemble.s:Assemble.c
@@ -12,4 +12,4 @@ Assemble.o:Assemble.s
 	$(CPP) -c Assemble.s $(CFLAGS)
 
 clean:
-	rm Assemble.o Assemble.test
+	rm Assemble.o Assemble.exe
