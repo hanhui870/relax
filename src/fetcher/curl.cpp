@@ -15,10 +15,8 @@ using ::std::endl;
 
 Curl::Curl() :
 		max_follow_(5), curl_(NULL) {
-
-	if (!global_inited_.load()) {
-		GlobalInit();
-	}
+    //初始化一次
+    std::call_once(global_inited_, GlobalInit);
 
 	error_buffer_ = new char[CURL_ERROR_SIZE];
 }
@@ -33,8 +31,6 @@ Curl::~Curl() {
  */
 bool Curl::GlobalInit() {
 	curl_global_init(CURL_GLOBAL_ALL);
-	global_inited_.store(true);
-
 	return true;
 }
 

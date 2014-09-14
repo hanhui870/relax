@@ -11,7 +11,8 @@
 
 #include <string>
 #include <map>
-#include <atomic>
+#include <mutex>
+#include <functional>
 #include <curl/curl.h>
 
 namespace huilib {
@@ -73,11 +74,8 @@ private:
     //最大跟踪跳转
     long max_follow_;
 
-    static std::atomic<bool> global_inited_;
-
+    static std::once_flag global_inited_;
 };
-
-std::atomic<bool> Curl::global_inited_(false);
 
 } //huilib
 } //fetcher
