@@ -51,22 +51,25 @@ bool Curl::setMaxFollow(long num) {
 	return true;
 }
 
+/**
+ * 获取失败返回空结果
+ */
 string Curl::get(string url) {
 	if (curl_ == NULL && !InitCurl()) {
 		cout << "Failed to call InitCurl " << error_buffer_ << endl;
-		return NULL;
+		return string();
 	}
 
 	CURLcode code = curl_easy_setopt(curl_, CURLOPT_URL, url.c_str());
 	if (code != CURLE_OK) {
 		cout << "Failed to set URL " << error_buffer_ << endl;
-		return NULL;
+		return string();
 	}
 
 	code = curl_easy_perform(curl_);
 	if (code != CURLE_OK) {
 		cout << "Failed to get " << url << " error: " << error_buffer_ << endl;
-		return NULL;
+		return string();
 	}
 
 	return responce_;
@@ -76,28 +79,33 @@ string Curl::get(const char* url) {
 	return Curl::get(std::string(url));
 }
 
+/**
+ * post方式获取远程请求
+ *
+ * 获取失败返回空结果
+ */
 string Curl::post(string url, string param) {
 	if (curl_ == NULL && !InitCurl()) {
 		cout << "Failed to call InitCurl " << error_buffer_ << endl;
-		return NULL;
+		return string();
 	}
 
 	CURLcode code = curl_easy_setopt(curl_, CURLOPT_URL, url.c_str());
 	if (code != CURLE_OK) {
 		cout << "Failed to set URL " << error_buffer_ << endl;
-		return NULL;
+		return string();
 	}
 
 	code = curl_easy_setopt(curl_, CURLOPT_POSTFIELDS, param.c_str());
 	if (code != CURLE_OK) {
 		cout << "Failed to set post fields " << error_buffer_ << endl;
-		return NULL;
+		return string();
 	}
 
 	code = curl_easy_perform(curl_);
 	if (code != CURLE_OK) {
 		cout << "Failed to get " << url << " error: " << error_buffer_ << endl;
-		return NULL;
+		return string();
 	}
 
 	return responce_;
@@ -150,6 +158,8 @@ bool Curl::InitCurl() {
 
 	return true;
 }
+
+std::once_flag Curl::global_inited_;
 
 } //huilib
 } //fetcher
