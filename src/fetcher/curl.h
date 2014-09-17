@@ -15,7 +15,7 @@
 #include <functional>
 #include <curl/curl.h>
 
-namespace huilib {
+namespace relax {
 namespace fetcher {
 
 using ::std::string;

@@ -7,7 +7,7 @@
 #include <iostream>
 #include "curl.h"
 
-namespace huilib {
+namespace relax {
 namespace fetcher {
 
 using ::std::cout;
