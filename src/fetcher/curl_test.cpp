@@ -24,14 +24,14 @@ TEST(curl, fetch_taobao_com)
 	EXPECT_LT(0, curl->get("www.taobao.com").length());
 }
 
-TEST(curl, fetch_google_com)
+TEST(curl, fetch_https_alipay_com)
 {
     relax::timer t;
 
     using ::relax::fetcher::Curl;
     Curl* curl=new Curl();
 
-    EXPECT_LT(0, curl->get("www.google.com").length());
+    EXPECT_LT(0, curl->get("https://www.alipay.com").length());
 }
 
 TEST(curl, fetch_not_exists)

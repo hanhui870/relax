@@ -9,8 +9,8 @@ using boost::timer::auto_cpu_timer;
 
 class timer{
 public:
-    timer() {
-s
+    timer() : impl_(auto_cpu_timer()) {
+
     }
 private:
     auto_cpu_timer impl_;
