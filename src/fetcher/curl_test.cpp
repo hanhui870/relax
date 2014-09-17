@@ -1,7 +1,5 @@
 #include <gtest/gtest.h>
 #include "curl.h"
-#include <boost/timer/timer.hpp>
-
 
 TEST(curl, fetch_baidu_com)
 {
@@ -23,6 +21,16 @@ TEST(curl, fetch_taobao_com)
 
 	//内容长度>0
 	EXPECT_LT(0, curl->get("www.taobao.com").length());
+}
+
+TEST(curl, fetch_google_com)
+{
+    boost::timer::auto_cpu_timer t;
+
+    using ::huilib::fetcher::Curl;
+    Curl* curl=new Curl();
+
+    EXPECT_LT(0, curl->get("www.google.com").length());
 }
 
 TEST(curl, fetch_not_exists)
