@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <relax/timer.h>
-#include "curl.h"
+#include <relax/curl.h>
 
 TEST(curl, fetch_baidu_com)
 {

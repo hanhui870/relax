@@ -5,7 +5,7 @@
  * @since 2014/06/30
  */
 #include <iostream>
-#include "curl.h"
+#include <relax/curl.h>
 
 namespace relax {
 namespace fetcher {
@@ -161,5 +161,5 @@ bool Curl::InitCurl() {
 
 std::once_flag Curl::global_inited_;
 
-} //huilib
+} //relax
 } //fetcher
