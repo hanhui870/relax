@@ -1,29 +1,10 @@
 #include <relax/cookie.h>
 #include <vector>
+#include <relax/string_helper.h>
+#include <exception>
 
 namespace relax {
 namespace fetcher {
-
-CookieManager* CookieManager::instance_ = NULL;
-
-CookieManager* CookieManager::GetInstance() {
-    if (CookieManager::instance_ == NULL) {
-        CookieManager::instance_ = new CookieManager();
-    }
-
-    return CookieManager::instance_;
-}
-
-Cookie* Cookie::Add(CookieString cookie_str) {
-
-    return this;
-}
-
-Cookie* Cookie::Add(string name, string value) {
-    container_[name] = CookieValue(value);
-
-    return this;
-}
 
 class CookieValue {
 public:
@@ -65,11 +46,30 @@ private:
  */
 class CookieString {
 public:
+    const char kDelimiter=';';
+    const char kAssign='=';
+
     CookieString(string str) :
             expire_(0), httponly_(false), secure_(false) {
 
-        string::size_type pos=str.find(';');
+        using relax::utility::StringHelper;
+        auto result=StringHelper::explode(StringHelper::trim(str), string(kDelimiter));
 
+        try{
+            //处理name
+           if(result[0].find(kAssign)!=string::npos){
+               name_=result[0].substr(0, result[0].find(kAssign));
+               value_=result[0].substr(result[0].find(kAssign)+1);
+           }else{
+               name_=result[0];
+               value_=string();
+           }
+
+           //TODO parse
+
+        }catch(std::out_of_range & exception){
+
+        }
 
     }
 
@@ -125,6 +125,36 @@ private:
 
     bool secure_;
 };
+
+CookieManager* CookieManager::instance_ = NULL;
+
+CookieManager* CookieManager::GetInstance() {
+    if (CookieManager::instance_ == NULL) {
+        CookieManager::instance_ = new CookieManager();
+    }
+
+    return CookieManager::instance_;
+}
+
+Cookie& CookieManager::GetCookie(string domain) {
+    return container_[domain];
+}
+
+Cookie* Cookie::Add(CookieString cookie_obj) {
+    container_[cookie_obj.name()] = CookieValue(cookie_obj);
+
+    return this;
+}
+
+Cookie* Cookie::Add(const char* cookie_str) {
+    return Add(CookieString(cookie_str));
+}
+
+Cookie* Cookie::Add(string name, string value) {
+    container_[name] = CookieValue(value);
+
+    return this;
+}
 
 } //relax
 } //fetcher

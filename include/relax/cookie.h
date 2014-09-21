@@ -26,7 +26,7 @@ public:
     /**
      * 获取一个cookie实例
      */
-    Cookie GetCookie(string domain);
+    Cookie& GetCookie(string domain);
 
 private:
     //domain => cookie
@@ -53,6 +53,7 @@ public:
      *添加一个cookie，多次添加直接覆盖
      */
     Cookie* Add(CookieString cookie_obj);
+    Cookie* Add(const char* cookie_str);
     Cookie* Add(string name, string value);
 
     bool Delete(string name) {
@@ -64,6 +65,8 @@ public:
             return false;
         }
     }
+
+    string ToString();
 
 private:
     // name => value
