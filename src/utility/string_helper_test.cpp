@@ -19,4 +19,8 @@ TEST(string_helper, common_actions)
     EXPECT_EQ(7, result.size());
     EXPECT_STREQ("Token=1840m59u5epb5j5znsrwfm6amcrdt4gkdnu52o4f", result[0].c_str());
     EXPECT_STREQ("HttpOnly", StringHelper::trim(result[3]).c_str());
+
+    result=StringHelper::explode("", ";");
+    cout<<"StringHelper::explode(\"\", \";\") length="<< result.size()<<endl;
+    EXPECT_EQ(1, result.size());
 }
