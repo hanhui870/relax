@@ -4,7 +4,7 @@ CPP=g++
 CXXFLAGS=-g -std=c++11 -DGTEST_LANG_CXX11=1 -U__STRICT_ANSI__ -I../../include
 
 LIBS=-L/usr/local/lib   -lgtest -lgtest_main -lboost_timer.dll -lboost_system.dll
-OBJECTS=string_helper.o string_helper_test.o
+OBJECTS=time_helper.o time_helper_test.o string_helper.o string_helper_test.o
 BINARY=test.exe
 
 all: $(BINARY)
