@@ -57,6 +57,7 @@ public:
 
         try{
             //处理name
+            //TODO parse 这里的解析应该用at，而不是直接数组。参数env_helper
            if(result[0].find(kAssign)!=string::npos){
                name_=result[0].substr(0, result[0].find(kAssign));
                value_=result[0].substr(result[0].find(kAssign)+1);
@@ -64,8 +65,6 @@ public:
                name_=result[0];
                value_=string();
            }
-
-           //TODO parse
 
         }catch(std::out_of_range & exception){
 
