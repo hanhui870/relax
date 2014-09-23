@@ -155,5 +155,13 @@ Cookie* Cookie::Add(string name, string value) {
     return this;
 }
 
+string Cookie::Get(string name) {
+    if(container_.count(name)){
+        return container_[name];
+    }
+
+    return string();
+}
+
 } //relax
 } //fetcher

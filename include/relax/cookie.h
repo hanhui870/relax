@@ -56,6 +56,9 @@ public:
     Cookie* Add(const char* cookie_str);
     Cookie* Add(string name, string value);
 
+    //获取Cookie
+    string Get(string name);
+
     bool Delete(string name) {
         decltype(container_)::size_type deleted=container_.erase(name);
 
