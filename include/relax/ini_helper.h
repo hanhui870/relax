@@ -69,10 +69,13 @@ public:
     }
 
     NodeValue(string value) :
-            value_(value), type_(NODE_BRANCH) {
+            value_(value), type_(NODE_LEAF) {
     }
 
     ~NodeValue() {
+        if(type_==NODE_BRANCH){
+            delete value_.node;
+        }
     }
 
     enum ValueType {
