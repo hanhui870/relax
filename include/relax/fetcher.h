@@ -6,8 +6,8 @@
  *
  * @since 2014/09/17
  */
-#ifndef ROBOT_FETCHER_H_
-#define ROBOT_FETCHER_H_
+#ifndef RELAX_FETCHER_H_
+#define RELAX_FETCHER_H_
 
 namespace relax{
 namespace fetcher{
@@ -29,7 +29,7 @@ private:
 	Curl* _curl;
 };
 
-}//adn
-}//robot
+} //relax
+} //utility
 
-#endif
+#endif//RELAX_FETCHER_H_

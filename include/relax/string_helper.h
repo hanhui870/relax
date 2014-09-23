@@ -1,3 +1,14 @@
+/**
+ * Relax library
+ *
+ * @author 祝景法
+ * @email zhujingfa@gmail.com
+ *
+ * @since 2014/09/17
+ */
+#ifndef RELAX_UTILITY_STRING_HELPER_H_
+#define RELAX_UTILITY_STRING_HELPER_H_
+
 #include <string>
 #include <vector>
 
@@ -23,3 +34,5 @@ public:
 
 } //relax
 } //utility
+
+#endif//RELAX_UTILITY_STRING_HELPER_H_

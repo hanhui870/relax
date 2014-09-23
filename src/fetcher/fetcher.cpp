@@ -9,8 +9,8 @@
 #include <iostream>
 #include "fetcher.h"
 
-namespace adn {
-namespace robot {
+namespace relax{
+namespace fetcher{
 
 Fetcher::Fetcher() {
     _curl=new Curl();
@@ -18,5 +18,5 @@ Fetcher::Fetcher() {
 
 
 
-} //adn
-} //robot
+}//adn
+}//robot

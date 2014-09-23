@@ -1,3 +1,14 @@
+/**
+ * Relax library
+ *
+ * @author 祝景法
+ * @email zhujingfa@gmail.com
+ *
+ * @since 2014/09/17
+ */
+#ifndef RELAX_UTILITY_TIME_HELPER_H_
+#define RELAX_UTILITY_TIME_HELPER_H_
+
 #include <ratio>
 #include <ctime>
 #include <sys/time.h>
@@ -36,3 +47,5 @@ public:
 
 } //relax
 } //utility
+
+#endif//RELAX_UTILITY_TIME_HELPER_H_

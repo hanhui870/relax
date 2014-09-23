@@ -6,6 +6,9 @@
  *
  * @since 2014/09/17
  */
+#ifndef RELAX_FETCHER_COOKIE_H_
+#define RELAX_FETCHER_COOKIE_H_
+
 #include <map>
 #include <string>
 
@@ -86,3 +89,5 @@ private:
 
 } //relax
 } //fetcher
+
+#endif//RELAX_FETCHER_COOKIE_H_

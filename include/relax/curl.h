@@ -6,8 +6,8 @@
  * @author 祝景法
  * @since 2014/06/30
  */
-#ifndef HUILIB_FETCHER_CURL_H_
-#define HUILIB_FETCHER_CURL_H_
+#ifndef RELAX_FETCHER_CURL_H_
+#define RELAX_FETCHER_CURL_H_
 
 #include <string>
 #include <map>
@@ -80,4 +80,4 @@ private:
 } //huilib
 } //fetcher
 
-#endif
+#endif//RELAX_FETCHER_CURL_H_

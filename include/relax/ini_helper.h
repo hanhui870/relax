@@ -6,6 +6,9 @@
  *
  * @since 2014/09/17
  */
+#ifndef RELAX_UTILITY_INI_HELPER_H_
+#define RELAX_UTILITY_INI_HELPER_H_
+
 #include <map>
 #include <string>
 
@@ -94,3 +97,5 @@ private:
 
 } //relax
 } //utility
+
+#endif//RELAX_UTILITY_INI_HELPER_H_
