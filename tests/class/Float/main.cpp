@@ -1,8 +1,10 @@
 /**
- * Duomai.ADN Robot
+ * Relax library
  *
- * @author Bruce
- * @since 2014/06/30
+ * @author 祝景法
+ * @email zhujingfa@gmail.com
+ *
+ * @since 2014/09/17
  */
 #include <iostream>
 #include "Point3d.h"
