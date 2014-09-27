@@ -64,11 +64,22 @@ Status Variable::Get(string key, string& value) {
     return Status::Fail();
 }
 
+Status Variable::Set(string key, string value) {
+    container_[key]=value;
+
+    return Status::OK();
+}
+
 }//anonymous ns
 
 Status EnvHelper::GetVariable(string key, string& value) {
     Variable* var=Variable::GetInstance();
     return var->Get(key, value);
+}
+
+Status EnvHelper::SetVariable(string key, string value) {
+    Variable* var=Variable::GetInstance();
+    return var->Set(key, value);
 }
 
 } //relax

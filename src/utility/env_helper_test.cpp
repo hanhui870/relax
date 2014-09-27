@@ -22,4 +22,10 @@ TEST(env_helper, common_actions)
     //内容长度=0
     EnvHelper::GetVariable("SHELL", value);
     EXPECT_STREQ("/bin/bash", value.c_str());
+
+    EnvHelper::SetVariable("SHELL", "/bin/sh");
+    EnvHelper::GetVariable("SHELL", value);
+    cout<<"SHELL Variable new value:"<<value<<endl;
+    EXPECT_STREQ("/bin/sh", value.c_str());
+
 }

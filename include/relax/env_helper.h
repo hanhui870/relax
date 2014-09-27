@@ -29,7 +29,10 @@ public:
      */
     static Status GetVariable(string key, string& value);
 
-
+    /**
+     * 新设置或覆盖一个变量
+     */
+    static Status SetVariable(string key, string value);
 };
 
 
