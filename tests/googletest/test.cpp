@@ -13,6 +13,11 @@ TEST(algorithm, add_multiply)
 TEST(system, strict_ansi)
 {
 #ifndef __STRICT_ANSI__
- std::cout<<"__STRICT_ANSI__ macro defined."<<std::endl;
+    std::cout<<"__STRICT_ANSI__ macro defined."<<std::endl;
 #endif
+}
+
+TEST(system, common)
+{
+    std::cout<<"Sizeof bool type:"<<sizeof(bool)<<std::endl;
 }
