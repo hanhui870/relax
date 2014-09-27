@@ -18,26 +18,33 @@ namespace relax {
 
 using std::string;
 
-//输出变量
-#define RELAX_OUT;
-//输入变量，默认
-#define RELAX_IN;
-
 //relax 公共类
 //接口调用状态 Status
 class Status;
 
 class Status{
 public:
-    Status() : status_(false) {};
+    static Status OK(){
+        return Status(STATUS_OK);
+    }
 
-    Status(bool status, string message) : status_(status), message_(message) {};
+    static Status Fail(){
+        return Status(STATUS_FAIL);
+    }
+
+    Status(int code_) : code_(code_) {};
+    Status(int code_, string message) : code_(code_), message_(message) {};
+    ~Status(){};
+
+    Status(Status&& rvalue);
+    Status& operator=(Status&& rvalue);
 
     /**
      * 设置状态
      */
-    Status* set_status(bool status){
-        status_=status;
+    Status* set_code(int code){
+        code_=code;
+
         return this;
     }
 
@@ -49,24 +56,42 @@ public:
         return this;
     }
 
-    ~Status();
-
-    bool OK(){
-        return status_==true;
+    bool IsOK(){
+        return code_>=0;
     }
 
-    bool Fail(){
-        return status_==false;
+    bool IsFail(){
+        return code_<0;
     }
 
     string message(){
         return message_;
     }
 
+    int code(){
+        return code_;
+    }
+
 private:
-    bool status_;
+    enum Code{
+        STATUS_OK=0,
+        STATUS_FAIL=-1,
+    };
+
+    /**
+     * 状态code
+     *
+     * >=0成功
+     * <0失败
+     */
+    int code_;
+
+    /**
+     * 状态消息内容
+     */
     string message_;
 };
+
 
 } //relax
 
