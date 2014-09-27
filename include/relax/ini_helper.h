@@ -1,6 +1,9 @@
 /**
  * Relax library
  *
+ * ini配置文件解析库
+ * #include <relax/ini_helper.h>
+ *
  * @author 祝景法
  * @email zhujingfa@gmail.com
  *

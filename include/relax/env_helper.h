@@ -1,6 +1,9 @@
 /**
  * Relax library
  *
+ * 环境变量库
+ * #include <relax/env_helper.h>
+ *
  * @author 祝景法
  * @email zhujingfa@gmail.com
  *
