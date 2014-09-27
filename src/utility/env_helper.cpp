@@ -1,9 +1,9 @@
-#include <relax/env_helper.h>
-#include <relax/string_helper.h>
 #include <cctype>
 #include <cassert>
 #include <map>
 #include <stdio.h>
+#include <relax/env_helper.h>
+#include <relax/string_helper.h>
 
 extern char ** environ;
 
@@ -18,9 +18,9 @@ public:
     Variable();
     ~Variable();
 
-    string Get(string key);
+    Status Get(string key,  string& value);
 
-    string Set(string key, string value);
+    Status Set(string key, string value);
 
     static Variable* GetInstance();
 
@@ -55,19 +55,20 @@ Variable::Variable() {
     }
 }
 
-string Variable::Get(string key) {
+Status Variable::Get(string key, string& value) {
     if(container_.count(key)){
-        return container_[key];
+        value=container_[key];
+        return Status::OK();
     }
-
-    return string();
+    value.assign("");
+    return Status::Fail();
 }
 
 }//anonymous ns
 
-string EnvHelper::GetVariable(string key) {
+Status EnvHelper::GetVariable(string key, string& value) {
     Variable* var=Variable::GetInstance();
-    return var->Get(key);
+    return var->Get(key, value);
 }
 
 } //relax

@@ -13,6 +13,7 @@
 #define RELAX_UTILITY_ENV_HELPER_H_
 
 #include <string>
+#include <relax/relax.h>
 
 namespace relax {
 namespace utility {
@@ -26,7 +27,7 @@ public:
      *
      * 类似于PATH、SHELL等变量
      */
-    static string GetVariable(string key);
+    static Status GetVariable(string key, string& value);
 
 
 };

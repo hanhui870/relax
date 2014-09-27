@@ -8,12 +8,18 @@ TEST(env_helper, common_actions)
 {
     using ::relax::utility::EnvHelper;
 
-    cout<<"PATH Variable:"<<EnvHelper::GetVariable("PATH")<<endl;
+    string value;
 
-    cout<<"not existed Variable:"<<EnvHelper::GetVariable("fdafdxxxx_existed")<<endl;
-    cout<<"GOROOT Variable:"<<EnvHelper::GetVariable("GOROOT")<<endl;
+    EXPECT_EQ(true, EnvHelper::GetVariable("PATH", value).IsOK());
+    cout<<"PATH Variable:"<<value<<endl;
+
+    EXPECT_EQ(false, EnvHelper::GetVariable("fdafdxxxx_existed", value).IsOK());
+    cout<<"not existed Variable:"<<value<<endl;
+
+    EXPECT_EQ(true, EnvHelper::GetVariable("GOROOT", value).IsOK());
+    cout<<"GOROOT Variable:"<<value<<endl;
 
     //内容长度=0
-    EXPECT_STREQ("/bin/bash", EnvHelper::GetVariable("SHELL").c_str());
-    EXPECT_EQ(0, EnvHelper::GetVariable("fdafdxxxx_existed").size());
+    EnvHelper::GetVariable("SHELL", value);
+    EXPECT_STREQ("/bin/bash", value.c_str());
 }
