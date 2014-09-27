@@ -20,10 +20,10 @@ TEST(relax_common, status_test)
     cout<<"sizeof relax::Status="<<sizeof(Status)<<endl;
     EXPECT_EQ(8, sizeof(Status));
 
-    Status s=Status::OK();
+    Status s=Status::GetOK();
     EXPECT_EQ(true, s.IsOK());
     EXPECT_EQ(false, s.IsFail());
-    s=Status::Fail();
+    s=Status::GetFail();
     EXPECT_EQ(true, s.IsFail());
     EXPECT_EQ(false, s.IsOK());
 

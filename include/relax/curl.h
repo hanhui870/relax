@@ -14,6 +14,7 @@
 #include <mutex>
 #include <functional>
 #include <curl/curl.h>
+#include <relax/relax.h>
 
 namespace relax {
 namespace fetcher {
@@ -31,14 +32,12 @@ public:
     /**
      * get参数可以附带在url中
      */
-    string get(string url);
-    string get(const char* url);
+    Status get(string url, string& responce);
 
     /**
      * post参数传递通过map
      */
-    string post(string url, string param);
-    string post(const char* url, const char* param);
+    Status post(string url, string param, string& responce);
 
     /**
      * 设置最大跟踪数
@@ -61,7 +60,7 @@ public:
     static int Writer(char *data, size_t size, size_t nmemb,std::string *writerData);
 
 private:
-    bool InitCurl();
+    Status InitCurl();
 
     CURL* curl_;
 

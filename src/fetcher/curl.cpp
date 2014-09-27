@@ -4,14 +4,13 @@
  * @author 祝景法
  * @since 2014/06/30
  */
-#include <iostream>
+#include <cstdio>
 #include <relax/curl.h>
 
 namespace relax {
 namespace fetcher {
 
-using ::std::cout;
-using ::std::endl;
+using ::std::sprintf;
 
 Curl::Curl() :
 		max_follow_(5), curl_(NULL) {
@@ -54,29 +53,29 @@ bool Curl::setMaxFollow(long num) {
 /**
  * 获取失败返回空结果
  */
-string Curl::get(string url) {
-	if (curl_ == NULL && !InitCurl()) {
-		cout << "Failed to call InitCurl " << error_buffer_ << endl;
-		return string();
-	}
+Status Curl::get(string url, string& responce) {
+    //重置内容
+    responce="";
+
+    if (curl_ == NULL) {
+        Status s=InitCurl();
+        if(s.IsFail()){
+            return s;
+        }
+    }
 
 	CURLcode code = curl_easy_setopt(curl_, CURLOPT_URL, url.c_str());
-	if (code != CURLE_OK) {
-		cout << "Failed to set URL " << error_buffer_ << endl;
-		return string();
+    if (code != CURLE_OK) {
+		return Status::GetFail().set_message(string("Failed to set URL: ")+error_buffer_);
 	}
 
 	code = curl_easy_perform(curl_);
 	if (code != CURLE_OK) {
-		cout << "Failed to get " << url << " error: " << error_buffer_ << endl;
-		return string();
+	    return Status::GetFail().set_message(string("Failed to get ")+url+" error: " + error_buffer_);
 	}
 
-	return responce_;
-}
-
-string Curl::get(const char* url) {
-	return Curl::get(std::string(url));
+	responce=responce_;
+	return Status::GetOK();
 }
 
 /**
@@ -84,31 +83,34 @@ string Curl::get(const char* url) {
  *
  * 获取失败返回空结果
  */
-string Curl::post(string url, string param) {
-	if (curl_ == NULL && !InitCurl()) {
-		cout << "Failed to call InitCurl " << error_buffer_ << endl;
-		return string();
+Status Curl::post(string url, string param, string& responce) {
+    //重置内容
+    responce="";
+
+	if (curl_ == NULL) {
+	    Status s=InitCurl();
+	    if(s.IsFail()){
+	        return s;
+	    }
 	}
 
 	CURLcode code = curl_easy_setopt(curl_, CURLOPT_URL, url.c_str());
 	if (code != CURLE_OK) {
-		cout << "Failed to set URL " << error_buffer_ << endl;
-		return string();
+	    return Status::GetFail().set_message(string("Failed to set URL: ")+error_buffer_);
 	}
 
 	code = curl_easy_setopt(curl_, CURLOPT_POSTFIELDS, param.c_str());
 	if (code != CURLE_OK) {
-		cout << "Failed to set post fields " << error_buffer_ << endl;
-		return string();
+	    return Status::GetFail().set_message(string("Failed to set post fields: ")+error_buffer_);
 	}
 
 	code = curl_easy_perform(curl_);
 	if (code != CURLE_OK) {
-		cout << "Failed to get " << url << " error: " << error_buffer_ << endl;
-		return string();
+	    return Status::GetFail().set_message(string("Failed to get ")+url+" error: " + error_buffer_);
 	}
 
-	return responce_;
+	responce=responce_;
+    return Status::GetOK();
 }
 
 //static 关键词在定义中使用一次即可，外部不能再次使用
@@ -123,37 +125,36 @@ int Curl::Writer(char *data, size_t size, size_t nmemb,
 	return size * nmemb;
 }
 
-bool Curl::InitCurl() {
+Status Curl::InitCurl() {
+    if(curl_ != NULL) return Status::GetOK();
+
 	curl_ = curl_easy_init();
 	if (curl_ == NULL) {
-		cout << "Call curl_easy_init failed." << endl;
-		return false;
+	    return Status::GetFail().set_message(string("Call curl_easy_init failed."));
 	}
 
 	CURLcode code;
 
 	code = curl_easy_setopt(curl_, CURLOPT_ERRORBUFFER, error_buffer_);
 	if (code != CURLE_OK) {
-		cout << "Failed to set error buffer " << code << endl;
-		return false;
+	    char number[12];
+	    sprintf(number, "%s", static_cast<int>(code));
+	    return Status::GetFail().set_message(string("Failed to set error buffer, code:")+number);
 	}
 
 	code = curl_easy_setopt(curl_, CURLOPT_FOLLOWLOCATION, max_follow_);
 	if (code != CURLE_OK) {
-		cout << "Failed to set redirect option " << error_buffer_ << endl;
-		return false;
+	    return Status::GetFail().set_message(string("Failed to set redirect option: ")+error_buffer_);
 	}
 
 	code = curl_easy_setopt(curl_, CURLOPT_WRITEFUNCTION, &Curl::Writer);
 	if (code != CURLE_OK) {
-		cout << "Failed to set writer " << error_buffer_ << endl;
-		return false;
+	    return Status::GetFail().set_message(string("Failed to set writer: ")+error_buffer_);
 	}
 
 	code = curl_easy_setopt(curl_, CURLOPT_WRITEDATA, &responce_);
 	if (code != CURLE_OK) {
-		cout << "Failed to set write data " << error_buffer_ << endl;
-		return false;
+	    return Status::GetFail().set_message(string("Failed to set write data: ")+error_buffer_);
 	}
 
 	return true;

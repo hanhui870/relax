@@ -58,16 +58,16 @@ Variable::Variable() {
 Status Variable::Get(string key, string& value) {
     if(container_.count(key)){
         value=container_[key];
-        return Status::OK();
+        return Status::GetOK();
     }
     value.assign("");
-    return Status::Fail();
+    return Status::GetFail();
 }
 
 Status Variable::Set(string key, string value) {
     container_[key]=value;
 
-    return Status::OK();
+    return Status::GetOK();
 }
 
 }//anonymous ns

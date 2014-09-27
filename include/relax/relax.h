@@ -24,11 +24,11 @@ class Status;
 
 class Status{
 public:
-    static Status OK(){
+    static Status GetOK(){
         return Status(STATUS_OK);
     }
 
-    static Status Fail(){
+    static Status GetFail(){
         return Status(STATUS_FAIL);
     }
 
@@ -37,23 +37,25 @@ public:
     ~Status(){};
 
     Status(Status&& rvalue);
+    Status(Status& rvalue);
     Status& operator=(Status&& rvalue);
+    Status& operator=(Status& rvalue);
 
     /**
      * 设置状态
      */
-    Status* set_code(int code){
+    Status& set_code(int code){
         code_=code;
 
-        return this;
+        return *this;
     }
 
     /**
      * 设置状态的消息内容
      */
-    Status* set_message(string message){
+    Status& set_message(string message){
         message_=message;
-        return this;
+        return *this;
     }
 
     bool IsOK(){
