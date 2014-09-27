@@ -42,7 +42,13 @@ private:
 /**
  * CookieString cookie字符串值
  *
+ * ietf cookie: http://www.ietf.org/rfc/rfc6265.txt
+ *
  * Set-Cookie:Token=v2gscbncfz5gk5bx4xphlkma4rlnvm13l65er8ix; expires=Fri, 20-Sep-2019 03:16:02 GMT; path=/; HttpOnly; secure;
+ * Set-Cookie:spanner=peFXug9jwtvpRIuthTpRynbA4ws1VM1/;path=/;secure;
+ * Set-Cookie:umt=HBf4721f420e82d869184a949e2eefcc2a; Domain=.alipay.com; Path=/; HttpOnly
+ * Set-Cookie:CAT=deleted; expires=Fri, 27-Sep-2013 15:21:13 GMT
+ * Set-Cookie:OUTFOX_SEARCH_USER_ID=551468692@58.101.75.242; domain=huihui.cn; path=/; expires=Mon, 19-Sep-2044 15:21:15 GMT
  */
 class CookieString {
 public:
@@ -57,19 +63,22 @@ public:
 
         try{
             //处理name
-            //TODO parse 这里的解析应该用at，而不是直接数组。参数env_helper
-           if(result[0].find(kAssign)!=string::npos){
-               name_=result[0].substr(0, result[0].find(kAssign));
-               value_=result[0].substr(result[0].find(kAssign)+1);
+            //parse 这里的解析应该用at，而不是直接数组。参数env_helper
+           if(result.at(0).find(kAssign)!=string::npos){
+               name_=result.at(0).substr(0, result.at(0).find(kAssign));
+               value_=result.at(0).substr(result.at(0).find(kAssign)+1);
            }else{
-               name_=result[0];
+               name_=result.at(0);
                value_=string();
+           }
+
+           if(result.at(1)){
+
            }
 
         }catch(std::out_of_range & exception){
 
         }
-
     }
 
     ~CookieString() {
