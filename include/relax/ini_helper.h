@@ -85,7 +85,8 @@ public:
     }
 
     enum ValueType {
-        NODE_LEAF, NODE_BRANCH
+        NODE_LEAF=0,
+        NODE_BRANCH=1
     };
 private:
     ValueType type_;
