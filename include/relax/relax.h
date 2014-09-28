@@ -32,6 +32,8 @@ public:
         return Status(STATUS_FAIL);
     }
 
+    //默认正常状态
+    Status() : code_(STATUS_OK) {};
     Status(int code_) : code_(code_) {};
     Status(int code_, string message) : code_(code_), message_(message) {};
     ~Status(){};
