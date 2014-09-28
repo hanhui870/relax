@@ -23,4 +23,18 @@ TEST(string_helper, common_actions)
     result=StringHelper::Explode("", ";");
     cout<<"StringHelper::Explode(\"\", \";\") length="<< result.size()<<endl;
     EXPECT_EQ(1, result.size());
+
+    long double dnum=15434343.43434343;
+    string value = StringHelper::ConvertToString(dnum);
+    cout << "Long double original: " << dnum << endl;
+    cout << "Long double to string: 15434343.43434343 => " << value << endl;
+    //stream转换法会有科学计数法
+    EXPECT_STREQ("1.54343e+07", value.c_str());
+
+    int inum=0x57;
+    value = StringHelper::ConvertToString(inum);
+    cout << "Long double original: " << inum << endl;
+    cout << "Long double to string: 0x57 => " << inum << endl;
+    //stream转换法会有科学计数法
+    EXPECT_STREQ("87", value.c_str());
 }

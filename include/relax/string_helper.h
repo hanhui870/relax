@@ -10,6 +10,7 @@
 #define RELAX_UTILITY_STRING_HELPER_H_
 
 #include <string>
+#include <sstream>
 #include <vector>
 
 namespace relax {
@@ -17,6 +18,7 @@ namespace utility {
 
 using std::string;
 using std::vector;
+using std::stringstream;
 
 class StringHelper{
 public:
@@ -30,7 +32,24 @@ public:
      */
     static string Trim(string str);
 
+    /**
+    * 将内容转换为string类型
+    */
+   template <typename T>
+   static string ConvertToString(T value);
 };
+
+template <typename T>
+string StringHelper::ConvertToString(T value){
+    stringstream sstream;
+    sstream<<value;
+
+    string tmp;
+    sstream>>tmp;
+    sstream.clear();
+
+    return tmp;
+}
 
 } //relax
 } //utility
