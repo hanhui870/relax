@@ -60,7 +60,6 @@ Status Variable::Get(string key, string& value) {
         value=container_[key];
         return Status::GetOK();
     }
-    value.assign("");
     return Status::GetFail();
 }
 

@@ -13,9 +13,12 @@ TEST(env_helper, common_actions)
     EXPECT_EQ(true, EnvHelper::GetVariable("PATH", value).IsOK());
     cout<<"PATH Variable:"<<value<<endl;
 
+    //需要客户端自己保证value初始为空。bad action.
+    value="";
     relax::Status s=EnvHelper::GetVariable("fdafdxxxx_existed", value);
     EXPECT_EQ(false, s.IsOK());
     cout<<"not existed Variable:"<<value<<endl;
+    EXPECT_STREQ("", value.c_str());
 
     EXPECT_EQ(true, EnvHelper::GetVariable("GOROOT", value).IsOK());
     cout<<"GOROOT Variable:"<<value<<endl;
