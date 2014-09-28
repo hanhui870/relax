@@ -1,6 +1,8 @@
 /**
  * Relax library
  *
+ * xml配置解析库
+ *
  * @author 祝景法
  * @email zhujingfa@gmail.com
  *
