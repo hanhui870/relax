@@ -11,6 +11,7 @@
 
 #include <map>
 #include <string>
+#include <relax/relax.h>
 
 namespace relax {
 namespace fetcher {
@@ -63,20 +64,20 @@ public:
     /**
      *添加一个cookie，多次添加直接覆盖
      */
-    Cookie* Add(CookieString cookie_obj);
-    Cookie* Add(const char* cookie_str);
-    Cookie* Add(string name, string value);
+    Status Add(CookieString& cookie_obj);
+    Status Add(string cookie_str);
+    Status Add(string name, string value);
 
     //获取Cookie
-    string Get(string name);
+    Status Get(string name, string& value);
 
-    bool Delete(string name) {
+    Status Delete(string name) {
         decltype(container_)::size_type deleted=container_.erase(name);
 
         if(deleted>0){
-            return true;
+            return Status::GetOK();
         }else{
-            return false;
+            return Status::GetFail();
         }
     }
 

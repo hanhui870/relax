@@ -46,7 +46,7 @@ Variable::Variable() {
 
     using ::relax::utility::StringHelper;
     for (env = environ; *env != 0; env++) {
-        auto result=StringHelper::explode(*env, "=");
+        auto result=StringHelper::Explode(*env, "=");
         try{
             container_[result.at(0)]=result.at(1);
         }catch(std::out_of_range& exception){

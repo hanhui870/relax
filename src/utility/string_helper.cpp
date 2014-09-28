@@ -5,7 +5,7 @@
 namespace relax {
 namespace utility {
 
-vector<string> StringHelper::explode(string str, string delimiter) {
+vector<string> StringHelper::Explode(string str, string delimiter) {
     string::size_type pos = 0;
     string::size_type pos_before = 0;
     vector<string> result;
@@ -29,7 +29,7 @@ vector<string> StringHelper::explode(string str, string delimiter) {
     return result;
 }
 
-string StringHelper::trim(string str) {
+string StringHelper::Trim(string str) {
     if (str.empty())
         return str;
 

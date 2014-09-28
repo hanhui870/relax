@@ -1,43 +1,14 @@
-#include <relax/cookie.h>
 #include <vector>
-#include <relax/string_helper.h>
 #include <exception>
+#include <stdexcept>
+#include <relax/cookie.h>
+#include <relax/string_helper.h>
 
 namespace relax {
 namespace fetcher {
 
-class CookieValue {
-public:
-    CookieValue(string cookie_str) :
-            value_(cookie_str), path_("/"), expire_(0), httponly_(false), secure_(false) {
-    }
-
-    CookieValue(CookieString cookie_obj) :
-            value_(cookie_obj.value()), path_(cookie_obj.path()), expire_(cookie_obj.expire()),
-            httponly_(cookie_obj.httponly()), secure_(cookie_obj.secure()) {
-    }
-
-    ~CookieValue() {
-    }
-
-private:
-    string value_;
-
-    string path_;
-
-    /**
-     * 过期时间
-     *
-     * >0 有效期 时间戳
-     * =0 无期限
-     * =-1 当前session有效
-     */
-    time_t expire_;
-
-    bool httponly_;
-
-    bool secure_;
-};
+using std::exception;
+using std::invalid_argument;
 
 /**
  * CookieString cookie字符串值
@@ -59,25 +30,17 @@ public:
             expire_(0), httponly_(false), secure_(false) {
 
         using relax::utility::StringHelper;
-        auto result=StringHelper::explode(StringHelper::trim(str), string(kDelimiter));
+        auto result=StringHelper::Explode(StringHelper::Trim(str), string(kDelimiter));
 
-        try{
-            //处理name
-            //parse 这里的解析应该用at，而不是直接数组。参数env_helper
-           if(result.at(0).find(kAssign)!=string::npos){
-               name_=result.at(0).substr(0, result.at(0).find(kAssign));
-               value_=result.at(0).substr(result.at(0).find(kAssign)+1);
-           }else{
-               //Exception 无效的cookie
-           }
-
-           if(result.at(1)){
-
-           }
-
-        }catch(std::out_of_range & exception){
-
-        }
+        //处理name
+        //parse 这里的解析应该用at，而不是直接数组。参数env_helper
+       if(result.at(0).find(kAssign)!=string::npos){
+           name_=result.at(0).substr(0, result.at(0).find(kAssign));
+           value_=result.at(0).substr(result.at(0).find(kAssign)+1);
+       }else{
+           //Exception 无效的cookie
+           throw new invalid_argument("Invalid cookie string!");
+       }
     }
 
     ~CookieString() {
@@ -96,15 +59,15 @@ public:
         return path_;
     }
 
-    string expire() {
+    time_t expire() {
         return expire_;
     }
 
-    string httponly() {
+    bool httponly() {
         return httponly_;
     }
 
-    string secure() {
+    bool secure() {
         return secure_;
     }
 
@@ -133,6 +96,39 @@ private:
     bool secure_;
 };
 
+class CookieValue {
+public:
+    CookieValue(string cookie_str) :
+            value_(cookie_str), path_("/"), expire_(0), httponly_(false), secure_(false) {
+    }
+
+    CookieValue(CookieString& cookie_obj) :
+            value_(cookie_obj.value()), path_(cookie_obj.path()), expire_(cookie_obj.expire()),
+            httponly_(cookie_obj.httponly()), secure_(cookie_obj.secure()) {
+    }
+
+    ~CookieValue() {
+    }
+
+private:
+    string value_;
+
+    string path_;
+
+    /**
+     * 过期时间
+     *
+     * >0 有效期 时间戳
+     * =0 无期限
+     * =-1 当前session有效
+     */
+    time_t expire_;
+
+    bool httponly_;
+
+    bool secure_;
+};
+
 CookieManager* CookieManager::instance_ = NULL;
 
 CookieManager* CookieManager::GetInstance() {
@@ -147,23 +143,32 @@ Cookie& CookieManager::GetCookie(string domain) {
     return container_[domain];
 }
 
-Cookie* Cookie::Add(CookieString cookie_obj) {
+Status Cookie::Add(CookieString& cookie_obj) {
     container_[cookie_obj.name()] = CookieValue(cookie_obj);
 
-    return this;
+    return Status::GetOK();
 }
 
-Cookie* Cookie::Add(const char* cookie_str) {
-    return Add(CookieString(cookie_str));
+Status Cookie::Add(string cookie_str) {
+    try{
+        CookieString s(cookie_str);
+
+        return Add(s);
+    }catch(std::exception & exception){
+
+        return Status::GetFail().set_message(exception.what());
+    }
 }
 
-Cookie* Cookie::Add(string name, string value) {
+Status Cookie::Add(string name, string value) {
     container_[name] = CookieValue(value);
 
-    return this;
+    return Status::GetOK();
 }
 
-string Cookie::Get(string name) {
+Status Cookie::Get(string name, string& value) {
+    value="";
+
     if(container_.count(name)){
         return container_[name];
     }

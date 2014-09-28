@@ -23,12 +23,12 @@ public:
     /**
      * 按字符串拆字符
      */
-    static vector<string> explode(string str, string delimiter);
+    static vector<string> Explode(string str, string delimiter);
 
     /**
      * 移除两边的空格
      */
-    static string trim(string str);
+    static string Trim(string str);
 
 };
 
