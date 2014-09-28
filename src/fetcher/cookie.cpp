@@ -42,7 +42,7 @@ private:
 /**
  * CookieString cookie字符串值
  *
- * ietf cookie: http://www.ietf.org/rfc/rfc6265.txt
+ * ietf cookie: http://tools.ietf.org/html/rfc6265
  *
  * Set-Cookie:Token=v2gscbncfz5gk5bx4xphlkma4rlnvm13l65er8ix; expires=Fri, 20-Sep-2019 03:16:02 GMT; path=/; HttpOnly; secure;
  * Set-Cookie:spanner=peFXug9jwtvpRIuthTpRynbA4ws1VM1/;path=/;secure;
@@ -68,8 +68,7 @@ public:
                name_=result.at(0).substr(0, result.at(0).find(kAssign));
                value_=result.at(0).substr(result.at(0).find(kAssign)+1);
            }else{
-               name_=result.at(0);
-               value_=string();
+               //Exception 无效的cookie
            }
 
            if(result.at(1)){
