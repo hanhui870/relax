@@ -4,7 +4,7 @@ CPP=g++
 CXXFLAGS=-g -std=c++11 -DGTEST_LANG_CXX11=1 -U__STRICT_ANSI__ -I../../include
 
 LIBS=-L/usr/local/lib   -lgtest -lgtest_main -lcurl -lidn -lssl -lcrypto -lz -lboost_timer.dll -lboost_system.dll
-OBJECTS=curl.o curl_test.o cookie.o cookie_test.o ../relax/relax.o
+OBJECTS=curl.o curl_test.o cookie.o cookie_test.o ../relax/relax.o ../utility/string_helper.o 
 BINARY=test.exe
 
 all: $(BINARY)
