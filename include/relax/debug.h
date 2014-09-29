@@ -6,7 +6,7 @@
  *
  * @since 2014/09/17
  */
-#ifndef RELAX_DEBUG_H_
-#define RELAX_DEBUG_H_
+#ifndef RELAX_RUNTIME_DEBUG_H_
+#define RELAX_RUNTIME_DEBUG_H_
 
-#endif//RELAX_DEBUG_H_
+#endif//RELAX_RUNTIME_DEBUG_H_

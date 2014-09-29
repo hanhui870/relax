@@ -16,8 +16,8 @@
  */
 #include <boost/timer/timer.hpp>
 
-#ifndef RELAX_TIMER_H_
-#define RELAX_TIMER_H_
+#ifndef RELAX_RUNTIME_TIMER_H_
+#define RELAX_RUNTIME_TIMER_H_
 
 namespace relax {
 
