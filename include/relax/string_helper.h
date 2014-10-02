@@ -37,6 +37,14 @@ public:
     */
    template <typename T>
    static string ConvertToString(T value);
+
+   /**
+    * 转换字符串大小写 分覆盖、返回新两个版本
+    */
+   void static ToUpper(string str, string& value);
+   static void ToUpper(string& str);
+   static void ToLower(string str, string& value);
+   static void ToLower(string& str);
 };
 
 template <typename T>

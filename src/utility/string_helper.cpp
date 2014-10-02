@@ -43,11 +43,11 @@ string StringHelper::Trim(string str) {
     }
 
     //全部空格
-    if(start==end){
+    if (start == end) {
         return string();
     }
 
-    for (auto iter=str.rbegin(); iter!=str.rend(); iter++) {
+    for (auto iter = str.rbegin(); iter != str.rend(); iter++) {
         if (std::isspace(*iter)) {
             end--;
         } else {
@@ -55,8 +55,34 @@ string StringHelper::Trim(string str) {
         }
     }
 
-    assert(end>start);
-    return str.substr(start, end-start);
+    assert(end > start);
+    return str.substr(start, end - start);
+}
+
+void StringHelper::ToUpper(string str, string& value) {
+    value.reserve(str.size());
+    for (auto& c : str) {
+        value.push_back(std::toupper(c));
+    }
+}
+
+void StringHelper::ToUpper(string& str) {
+    for (auto& c : str) {
+        c = std::toupper(c);
+    }
+}
+
+void StringHelper::ToLower(string str, string& value) {
+    value.reserve(str.size());
+    for (auto& c : str) {
+        value.push_back(std::tolower(c));
+    }
+}
+
+void StringHelper::ToLower(string& str) {
+    for (auto& c : str) {
+        c = std::tolower(c);
+    }
 }
 
 } //relax

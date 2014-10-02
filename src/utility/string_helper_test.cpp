@@ -37,4 +37,20 @@ TEST(string_helper, common_actions)
     cout << "Long double to string: 0x57 => " << inum << endl;
     //stream转换法会有科学计数法
     EXPECT_STREQ("87", value.c_str());
+
+    string s1("helLo World.");
+    StringHelper::ToUpper(s1);
+    EXPECT_STREQ("HELLO WORLD.", s1.c_str());
+    string s;
+    StringHelper::ToUpper("helLo World.", s);
+    cout<<"helLo World."<<" upcase:"<<s<<endl;
+    EXPECT_STREQ("HELLO WORLD.", s.c_str());
+
+    string s2("helLo World.");
+    StringHelper::ToLower(s2);
+    EXPECT_STREQ("hello world.", s2.c_str());
+    string s3;
+    StringHelper::ToLower("helLo World.", s3);
+    cout<<"helLo World."<<" lowercase:"<<s3<<endl;
+    EXPECT_STREQ("hello world.", s3.c_str());
 }
