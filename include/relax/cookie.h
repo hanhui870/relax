@@ -53,6 +53,8 @@ private:
     static CookieManager* instance_;
 };
 
+class CookieValue;
+
 //原始cookie解析字符串
 /**
  * CookieString cookie字符串值
@@ -67,37 +69,80 @@ private:
  */
 class CookieString {
 public:
-    const char* kDelimiter=";";
-    const char* kAssign="=";
+    const char* kDelimiter = ";";
+    const char* kAssign = "=";
+
+    CookieString() :
+            name_(""), value_(""), path_("/"), expire_(0), httponly_(false), secure_(false) {
+    }
+
+    CookieString(string key, CookieValue value);
 
     CookieString(string str) :
             expire_(0), httponly_(false), secure_(false) {
 
         using relax::utility::StringHelper;
-        auto result=StringHelper::Explode(StringHelper::Trim(str), kDelimiter);
+        auto result = StringHelper::Explode(StringHelper::Trim(str), kDelimiter);
 
         //处理name
         //parse 这里的解析应该用at，而不是直接数组。参数env_helper
-       if(result.at(0).find(kAssign)!=string::npos){
-           name_=result.at(0).substr(0, result.at(0).find(kAssign));
-           value_=result.at(0).substr(result.at(0).find(kAssign)+1);
-       }else{
-           //Exception 无效的cookie
-           throw new invalid_argument("Invalid cookie string!");
-       }
+        {
+            string& tmp =  result.at(0);
+            if (tmp.find(kAssign) != string::npos) {
+                name_ = tmp.substr(0, tmp.find(kAssign));
+                value_ = tmp.substr(tmp.find(kAssign) + 1);
+            } else {
+                //Exception 无效的cookie
+                throw invalid_argument(string("Invalid cookie string: ") + str);
+            }
+        }
+
+        std::vector<string>::size_type size;
+        for (size = 1; size < result.size(); size++) {
+            string& tmp = result.at(size);
+            if(StringHelper::Trim(tmp).size()==0) continue;
+
+            if (tmp.find(kAssign) != string::npos) {
+                string key = StringHelper::Trim(tmp.substr(0, tmp.find(kAssign)));
+                string value = StringHelper::Trim(tmp.substr(tmp.find(kAssign) + 1));
+                if(key.size()==0) continue;
+
+                string up;
+                StringHelper::ToUpper(key, up);
+
+                if (up.compare("EXPIRES") == 0) {
+                    expire_ = 0;
+                } else if (up.compare("PATH") == 0) {
+                    path_ = value;
+                }
+
+            } else {
+                string key = StringHelper::Trim(tmp);
+                if(key.size()==0) continue;
+
+                string up;
+                StringHelper::ToUpper(key, up);
+
+                if (up.compare("HTTPONLY") == 0) {
+                    httponly_ = true;
+                } else if (up.compare("SECURE") == 0) {
+                    secure_ = true;
+                }
+            }
+        }
     }
 
     ~CookieString() {
 
     }
 
-    void Reset(){
-        name_="";
-        value_="";
-        path_="";
-        expire_=0;
-        httponly_=false;
-        secure_=false;
+    void Reset() {
+        name_ = "";
+        value_ = "";
+        path_ = "";
+        expire_ = 0;
+        httponly_ = false;
+        secure_ = false;
     }
 
     string name() {
@@ -125,15 +170,17 @@ public:
     }
 
     string ToString() {
-        string result = name_ + "=" + value_ + "; " + "path=" + path_ + "; "+ "expires=" + StringHelper::ConvertToString(expire_) + "; ";
+        string result = name_ + "=" + value_ + ";" + " expires=" + StringHelper::ConvertToString(expire_) + ";"+ " path=" + path_ + ";";
         if (httponly_) {
-            result + " HttpOnly;";
+            result += " HttpOnly;";
         }
         if (secure_) {
-            result + " secure;";
+            result += " Secure;";
         }
         return result;
     }
+
+    CookieString& operator=(const CookieString& rvalue);
 
 private:
     string name_;
@@ -168,15 +215,35 @@ public:
     ~CookieValue() {
     }
 
-    void Reset(){
-        value_="";
-        path_="";
-        expire_=0;
-        httponly_=false;
-        secure_=false;
+    void Reset() {
+        value_ = "";
+        path_ = "";
+        expire_ = 0;
+        httponly_ = false;
+        secure_ = false;
     }
 
-    CookieValue& operator=(CookieValue rvalue);
+    string value() {
+        return value_;
+    }
+
+    string path() {
+        return path_;
+    }
+
+    time_t expire() {
+        return expire_;
+    }
+
+    bool httponly() {
+        return httponly_;
+    }
+
+    bool secure() {
+        return secure_;
+    }
+
+    CookieValue& operator=(const CookieValue& rvalue);
 
 private:
     string value_;
@@ -215,13 +282,14 @@ public:
 
     //获取Cookie
     Status Get(string name, CookieValue& value);
+    Status Get(string name, CookieString& obj);
 
     Status Delete(string name) {
         decltype(container_)::size_type deleted=container_.erase(name);
 
-        if(deleted>0){
+        if(deleted>0) {
             return Status::GetOK();
-        }else{
+        } else {
             return Status::GetFail();
         }
     }
@@ -233,7 +301,7 @@ private:
     map<string, CookieValue> container_;
 };
 
-} //relax
-} //fetcher
+}//relax
+}//fetcher
 
 #endif//RELAX_FETCHER_COOKIE_H_

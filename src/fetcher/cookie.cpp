@@ -4,8 +4,26 @@
 namespace relax {
 namespace fetcher {
 
-CookieValue& CookieValue::operator=(CookieValue rvalue){
+CookieValue& CookieValue::operator=(const CookieValue& rvalue){
     if(this != &rvalue){
+        value_=rvalue.value_;
+        path_=rvalue.path_;
+        expire_=rvalue.expire_;
+        httponly_=rvalue.httponly_;
+        secure_=rvalue.secure_;
+    }
+
+    return *this;
+}
+
+CookieString::CookieString(string key, CookieValue value) :
+    name_(key), value_(value.value()), path_(value.path()), expire_(value.expire()),
+    httponly_(value.httponly()), secure_(value.secure()) {
+}
+
+CookieString& CookieString::operator=(const CookieString& rvalue){
+    if(this != &rvalue){
+        name_=rvalue.name_;
         value_=rvalue.value_;
         path_=rvalue.path_;
         expire_=rvalue.expire_;
@@ -42,7 +60,6 @@ Status Cookie::Add(string cookie_str) {
 
         return Add(s);
     }catch(std::exception & exception){
-
         return Status::GetFail().set_message(exception.what());
     }
 }
@@ -61,6 +78,16 @@ Status Cookie::Add(string name, string value) {
 Status Cookie::Get(string name, CookieValue& value) {
     if(container_.count(name)){
         value=container_[name];
+        return Status::GetOK();
+    }
+
+    return Status::GetFail();
+}
+//获取为CookieString版本
+Status Cookie::Get(string name, CookieString& obj) {
+    if(container_.count(name)){
+        CookieValue value=container_[name];
+        obj=CookieString(name, value);
         return Status::GetOK();
     }
 
