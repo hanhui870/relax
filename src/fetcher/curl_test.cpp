@@ -8,30 +8,32 @@ using ::relax::fetcher::Curl;
 
 TEST(curl, fetch_baidu_com)
 {
-	relax::timer t;
+    relax::timer t;
 
-	using ::relax::fetcher::Curl;
-	Curl* curl=new Curl();
+    using ::relax::fetcher::Curl;
+    Curl* curl=new Curl();
 
-	//内容长度>0
-	std::string r;
+    //内容长度>0
+    std::string r;
 
-	Status s=curl->get("www.baidu.com", r);
-	EXPECT_EQ(true, s.IsOK());
-	EXPECT_LT(0, r.length());
+    Status s=curl->get("www.baidu.com", r);
+    EXPECT_EQ(true, s.IsOK());
+    if(s.IsFail()) cout<<"Status error message: "<<s.message()<<endl;
+    EXPECT_LT(0, r.length());
 }
 
 TEST(curl, fetch_taobao_com)
 {
     relax::timer t;
 
-	Curl* curl=new Curl();
+    Curl* curl=new Curl();
 
-	//内容长度>0
-	std::string r;
+    //内容长度>0
+    std::string r;
 
-	Status s=curl->get("www.taobao.com", r);
-	EXPECT_EQ(true, s.IsOK());
+    Status s=curl->get("www.taobao.com", r);
+    EXPECT_EQ(true, s.IsOK());
+    if(s.IsFail()) cout<<"Status error message: "<<s.message()<<endl;
     EXPECT_LT(0, r.length());
 }
 
@@ -43,6 +45,7 @@ TEST(curl, fetch_https_alipay_com)
     std::string r;
     Status s=curl->get("https://www.alipay.com", r);
     EXPECT_EQ(true, s.IsOK());
+    if(s.IsFail()) cout<<"Status error message: "<<s.message()<<endl;
     EXPECT_LT(0, r.length());
 }
 
@@ -58,6 +61,6 @@ TEST(curl, fetch_not_exists)
     Status s=curl->get("www.fdddddddddddddddddddddddddddddd.com", r);
 
     EXPECT_EQ(false, s.IsOK());
-    cout<<"Status error message: "<<s.message()<<endl;
+    if(s.IsFail()) cout<<"Status error message: "<<s.message()<<endl;
     EXPECT_EQ(0, r.length());
 }
