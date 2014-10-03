@@ -11,10 +11,17 @@
 
 #include <ratio>
 #include <ctime>
+#include <string>
+#include <cstring>
+#include <time.h>
 #include <sys/time.h>
+#include <relax/relax.h>
 
 namespace relax {
 namespace utility {
+
+using std::string;
+using std::memset;
 
 class TimeHelper{
 public:
@@ -22,6 +29,8 @@ public:
 	typedef time_t second;
 
 	static const int kMicroRatio=1000000;
+	static const int kBufferSize=100;
+	static const char* kCookieFormat;
 
     /**
      * 按字符串拆字符
@@ -43,6 +52,44 @@ public:
     static second Time(){
     	return time(NULL);
     }
+
+    /**
+     * 将Cookie时间转换为时间戳
+     *
+     * Fri, 20-Sep-2019 03:16:02 GMT;
+     *
+     * TODO 还有问题的，时区不能正确识别
+     */
+    static Status CookieTimeToStamp(string str, second& sec){
+        struct tm tm;
+        memset(&tm, 0, sizeof(tm));
+
+        if(strptime(str.c_str(), kCookieFormat, &tm)==NULL){
+            return Status::GetFail().set_message("Error strptime.");
+        }
+
+        sec=static_cast<second>(mktime(&tm));
+
+        return Status::GetOK();
+    }
+
+    /**
+     * 将时间戳转换为Cookie时间
+     */
+    static Status StampToCookieTime(second sec, string& result){
+        char buffer[kBufferSize];
+
+        struct tm* tm = localtime(&sec);
+
+        size_t s=strftime(buffer, kBufferSize, kCookieFormat, tm);
+        if (s == 0) {
+            return Status::GetFail().set_message("Error strftime.");
+        }else{
+            result = string(buffer);
+            return Status::GetOK();
+        }
+    }
+
 };
 
 } //relax

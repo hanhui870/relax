@@ -15,6 +15,7 @@
 #include <stdexcept>
 #include <relax/relax.h>
 #include <relax/string_helper.h>
+#include <relax/time_helper.h>
 
 namespace relax {
 namespace fetcher {
@@ -24,6 +25,7 @@ using std::string;
 using std::exception;
 using std::invalid_argument;
 using utility::StringHelper;
+using relax::utility::TimeHelper;
 
 class Cookie;
 
@@ -111,7 +113,14 @@ public:
                 StringHelper::ToUpper(key, up);
 
                 if (up.compare("EXPIRES") == 0) {
-                    expire_ = 0;
+                    TimeHelper::second sec;
+                    Status s=TimeHelper::CookieTimeToStamp(value, sec);
+                    if(s.IsOK()){
+                        expire_ = sec;
+                    }else{
+                        throw invalid_argument(string("Invalid cookie expire string: ") + value);
+                    }
+
                 } else if (up.compare("PATH") == 0) {
                     path_ = value;
                 }
@@ -170,7 +179,9 @@ public:
     }
 
     string ToString() {
-        string result = name_ + "=" + value_ + ";" + " expires=" + StringHelper::ConvertToString(expire_) + ";"+ " path=" + path_ + ";";
+        string time;
+        TimeHelper::StampToCookieTime(expire_, time);
+        string result = name_ + "=" + value_ + ";" + " expires=" + time + ";"+ " path=" + path_ + ";";
         if (httponly_) {
             result += " HttpOnly;";
         }
