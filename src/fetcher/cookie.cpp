@@ -49,6 +49,10 @@ Cookie& CookieManager::GetCookie(string domain) {
 }
 
 Status Cookie::Add(CookieString& cookie_obj) {
+    //有效期小于当前删除Cookie
+    if(cookie_obj.expire()>0 && cookie_obj.expire()<TimeHelper::Time()){
+        return Delete(cookie_obj.name()).set_message("expire<Now, delete it.");
+    }
     container_[cookie_obj.name()] = CookieValue(cookie_obj);
 
     return Status::GetOK();
@@ -80,7 +84,7 @@ Status Cookie::Get(string name, CookieValue& value) {
         value=container_[name];
         return Status::GetOK();
     }
-
+    value.Reset();
     return Status::GetFail();
 }
 //获取为CookieString版本
@@ -90,9 +94,25 @@ Status Cookie::Get(string name, CookieString& obj) {
         obj=CookieString(name, value);
         return Status::GetOK();
     }
-
+    obj.Reset();
     return Status::GetFail();
 }
+//获取所有Cookie键值对
+Status Cookie::GetAll(string& value) {
+    if(container_.size()>0){
+        map<string, CookieValue>::iterator pos;
+        string result;
+        for(pos=container_.begin(); pos!=container_.end(); pos++ ){
+            result+=CookieString(pos->first, pos->second).ToKVString();
+        }
+        value=result;
+        return Status::GetOK();
+    }
+
+    value="";
+    return Status::GetFail().set_message("Empty cookie.");
+}
+
 
 } //relax
 } //fetcher

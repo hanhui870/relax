@@ -191,6 +191,10 @@ public:
         return result;
     }
 
+    string ToKVString() {
+        return name_ + "=" + value_ + "; ";
+    }
+
     CookieString& operator=(const CookieString& rvalue);
 
 private:
@@ -294,6 +298,7 @@ public:
     //获取Cookie
     Status Get(string name, CookieValue& value);
     Status Get(string name, CookieString& obj);
+    Status GetAll(string& value);
 
     Status Delete(string name) {
         decltype(container_)::size_type deleted=container_.erase(name);
