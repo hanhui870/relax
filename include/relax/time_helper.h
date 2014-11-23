@@ -33,7 +33,7 @@ public:
 	static const char* kCookieFormat;
 
     /**
-     * 按字符串拆字符
+     * 获取UTC微秒级时间戳
      */
 	static micro MicroTime(){
 		struct timeval timestamp;
@@ -47,7 +47,7 @@ public:
 	}
 
     /**
-     * 移除两边的空格
+     * 获取UTC秒级时间戳
      */
     static second Time(){
     	return time(NULL);
@@ -55,23 +55,8 @@ public:
 
     /**
      * 将Cookie时间转换为时间戳
-     *
-     * Fri, 20-Sep-2019 03:16:02 GMT;
-     *
-     * TODO 还有问题的，时区不能正确识别
      */
-    static Status CookieTimeToStamp(string str, second& sec){
-        struct tm tm;
-        memset(&tm, 0, sizeof(tm));
-
-        if(strptime(str.c_str(), kCookieFormat, &tm)==NULL){
-            return Status::GetFail().set_message("Error strptime.");
-        }
-
-        sec=static_cast<second>(mktime(&tm));
-
-        return Status::GetOK();
-    }
+    static Status CookieTimeToStamp(string str, second& sec);
 
     /**
      * 将时间戳转换为Cookie时间
