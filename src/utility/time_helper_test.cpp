@@ -4,7 +4,6 @@
 
 using namespace std;
 
-
 TEST(time_helper, common_actions)
 {
     using ::relax::utility::TimeHelper;

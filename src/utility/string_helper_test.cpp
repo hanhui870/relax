@@ -4,7 +4,6 @@
 
 using namespace std;
 
-
 TEST(string_helper, common_actions)
 {
     relax::timer t;

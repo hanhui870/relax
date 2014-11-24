@@ -9,19 +9,13 @@
 #ifndef RELAX_UTILITY_TIME_HELPER_H_
 #define RELAX_UTILITY_TIME_HELPER_H_
 
-#include <ratio>
-#include <ctime>
 #include <string>
-#include <cstring>
-#include <time.h>
-#include <sys/time.h>
 #include <relax/relax.h>
 
 namespace relax {
 namespace utility {
 
 using std::string;
-using std::memset;
 
 class TimeHelper{
 public:
@@ -35,16 +29,7 @@ public:
     /**
      * 获取UTC微秒级时间戳
      */
-	static micro MicroTime(){
-		struct timeval timestamp;
-
-		//return 0 for success, or -1 for failure
-		if(gettimeofday(&timestamp, NULL)==-1){
-			return -1;
-		}
-
-		return static_cast<micro>(timestamp.tv_sec)*kMicroRatio+timestamp.tv_usec;
-	}
+	static micro MicroTime();
 
     /**
      * 获取UTC秒级时间戳
@@ -66,19 +51,7 @@ public:
     /**
      * 将时间戳转换为Cookie时间
      */
-    static Status StampToCookieTime(second sec, string& result){
-        char buffer[kBufferSize];
-
-        struct tm* tm = gmtime(&sec);
-
-        size_t s=strftime(buffer, kBufferSize, kCookieFormat, tm);
-        if (s == 0) {
-            return Status::GetFail().set_message("Error strftime.");
-        }else{
-            result = string(buffer);
-            return Status::GetOK();
-        }
-    }
+    static Status StampToCookieTime(second sec, string& result);
 
 };
 
