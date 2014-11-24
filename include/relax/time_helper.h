@@ -54,6 +54,11 @@ public:
     }
 
     /**
+	* 将tm时间转换为Unix时间戳
+	*/
+   static Status TmToStamp(struct tm &tm, second& sec);
+
+    /**
      * 将Cookie时间转换为时间戳
      */
     static Status CookieTimeToStamp(string str, second& sec);
@@ -64,7 +69,7 @@ public:
     static Status StampToCookieTime(second sec, string& result){
         char buffer[kBufferSize];
 
-        struct tm* tm = localtime(&sec);
+        struct tm* tm = gmtime(&sec);
 
         size_t s=strftime(buffer, kBufferSize, kCookieFormat, tm);
         if (s == 0) {

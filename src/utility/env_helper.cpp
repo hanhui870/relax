@@ -12,6 +12,11 @@ namespace utility {
 
 using std::map;
 
+/**
+ * ENV辅助类
+ *
+ * TODO ENV辅助类跟全局类变量的互通问题，目前修改仅覆盖局部变量
+ */
 namespace {
 class Variable {
 public:

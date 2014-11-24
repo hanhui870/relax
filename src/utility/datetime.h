@@ -302,6 +302,7 @@ time_from_string(const std::string& s)
             || (std::strcmp(c, "MDT") == 0)
             || (std::strcmp(c, "F") == 0)) {
         ts.tm_sec -= 6 * 3600;
+    //mountain standard time (美国)山区标准时间(指国际时区西七区的区时)
     } else if ((std::strcmp(c, "MST") == 0)
             || (std::strcmp(c, "PDT") == 0)
             || (std::strcmp(c, "G") == 0)) {

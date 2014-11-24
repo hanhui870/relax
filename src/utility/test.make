@@ -1,6 +1,7 @@
 CPP=g++
 
 #gtes已经支持c++11，但是不能存在__STRICT_ANSI__宏变量，cygwin取消掉即可；其他环境未测试
+#-U__STRICT_ANSI_对于修改env的setenv函数也是必须的，撤销严格标准限制
 CXXFLAGS=-g -std=c++11 -DGTEST_LANG_CXX11=1 -U__STRICT_ANSI__ -I../../include
 
 LIBS=-L/usr/local/lib   -lgtest -lgtest_main -lboost_timer.dll -lboost_system.dll

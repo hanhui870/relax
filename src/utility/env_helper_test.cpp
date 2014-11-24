@@ -32,4 +32,7 @@ TEST(env_helper, common_actions)
     cout<<"SHELL Variable new value:"<<value<<endl;
     EXPECT_STREQ("/bin/sh", value.c_str());
 
+    EnvHelper::GetVariable("TZ", value);
+    cout<<"TZ Variable value:"<<value<<endl;
+
 }

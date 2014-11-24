@@ -1,4 +1,5 @@
 #include <relax/time_helper.h>
+#include <stdlib.h>
 #include "datetime.h"
 
 namespace relax {
@@ -22,9 +23,31 @@ Status TimeHelper::CookieTimeToStamp(string str, second& sec) {
         return Status::GetFail().set_message(s+ e.what());
     }
 
-    sec = static_cast<second>(mktime(&tm));
+    //mktime也是时区相关的
+    second tmp;
+    Status s=TmToStamp(tm, tmp);
+    if(s.IsOK()){
+    	sec=tmp;
+    }
 
-    return Status::GetOK();
+    return s;
+}
+
+/**
+ * 将Cookie时间转换为时间戳
+ *
+ * 解决时区依赖，转换为UTC情况下的
+ */
+Status TimeHelper::TmToStamp(struct tm &tm, second& sec){
+	//返回的指向内部指针的，因为必须使用string重新拷贝一份
+	string value=getenv("TZ");
+	setenv("TZ", "", 1);
+
+	sec = static_cast<second>(mktime(&tm));
+
+	setenv("TZ", value.c_str(), 1);
+
+	return Status::GetOK();
 }
 
 } //relax
