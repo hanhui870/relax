@@ -23,8 +23,8 @@ using std::string;
 class EnvHelper{
 public:
     enum OverWrite {
-        NO=0,
-        YES=1
+        OW_NO=0,
+        OW_YES=1
     };
 
     /**
@@ -51,7 +51,7 @@ public:
      *
      * 注: 会对本进程的所有环境变量产生影响
      */
-    static Status SetGlobal(string key, string value, OverWrite overwrite=YES);
+    static Status SetGlobal(string key, string value, OverWrite overwrite=OW_YES);
 };
 
 

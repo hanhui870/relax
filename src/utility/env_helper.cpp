@@ -2,6 +2,7 @@
 #include <cassert>
 #include <map>
 #include <stdio.h>
+#include <stdlib.h>
 #include <relax/env_helper.h>
 #include <relax/string_helper.h>
 
@@ -14,8 +15,6 @@ using std::map;
 
 /**
  * ENV辅助类
- *
- * TODO ENV辅助类跟全局类变量的互通问题，目前修改仅覆盖局部变量
  */
 namespace {
 class Variable {
@@ -84,6 +83,36 @@ Status EnvHelper::GetVariable(string key, string& value) {
 Status EnvHelper::SetVariable(string key, string value) {
     Variable* var=Variable::GetInstance();
     return var->Set(key, value);
+}
+
+
+/**
+* 新设置或覆盖一个全局变量
+*
+* 注: 会对本进程的所有环境变量产生影响
+*/
+Status EnvHelper::GetGlobal(string key, string& value) {
+    char* valTmp=getenv(key.c_str());
+    if(valTmp==NULL){
+        return Status::GetFail().set_message("Not found.");
+    }
+
+    value=valTmp;
+    return Status::GetOK();
+}
+
+/**
+ * 获取系统全局环境变量值
+ */
+Status EnvHelper::SetGlobal(string key, string value, OverWrite overwrite) {
+    //setenv() copies its arguments
+    if(overwrite==OW_YES){
+        setenv(const_cast<char *>(key.c_str()), value.c_str(), 1);
+    }else{
+        setenv(const_cast<char *>(key.c_str()), value.c_str(), 0);
+    }
+
+    return Status::GetOK();
 }
 
 } //relax

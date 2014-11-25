@@ -1,7 +1,7 @@
 #include <time.h>
 #include <sys/time.h>
 #include <relax/time_helper.h>
-#include <stdlib.h>
+#include <relax/env_helper.h>
 #include <cstring>
 #include "datetime.h"
 
@@ -32,12 +32,19 @@ TimeHelper::micro TimeHelper::MicroTime(){
  */
 Status TimeHelper::TmToStamp(struct tm &tm, second& sec){
     //返回的指向内部指针的，因为必须使用string重新拷贝一份
-    string value=getenv("TZ");
-    setenv("TZ", "", 1);
+    string value;
+    string key="TZ";
+    Status s=EnvHelper::GetGlobal(key, value);
+    if(s.IsOK()){
+        string empty;
+        EnvHelper::SetGlobal(key, empty, EnvHelper::OW_YES);
+    }
 
     sec = static_cast<second>(mktime(&tm));
 
-    setenv("TZ", value.c_str(), 1);
+    if(s.IsOK()){
+        EnvHelper::SetGlobal(key, value, EnvHelper::OW_YES);
+    }
 
     return Status::GetOK();
 }

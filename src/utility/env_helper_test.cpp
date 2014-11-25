@@ -35,4 +35,13 @@ TEST(env_helper, common_actions)
     EnvHelper::GetVariable("TZ", value);
     cout<<"TZ Variable value:"<<value<<endl;
 
+    //全局变量设置
+    EnvHelper::SetGlobal("TZ", "Pacific/Auckland");
+    string valnew;
+    EnvHelper::GetGlobal("TZ", valnew);
+    cout<<"TZ Variable new value:"<<valnew<<endl;
+    EXPECT_STREQ("Pacific/Auckland", valnew.c_str());
+    EnvHelper::SetGlobal("TZ", value);
+    EnvHelper::GetGlobal("TZ", valnew);
+    cout<<"TZ Variable reseted:"<<valnew<<endl;
 }
