@@ -14,89 +14,65 @@
 
 #include <map>
 #include <string>
+#include <relax/relax.h>
 
 namespace relax {
-namespace fetcher {
+namespace utility {
 
 using std::map;
 using std::string;
 
-class IniNode;
+class IniEnv;
 class NodeValue;
 
 class IniHelper {
 public:
-    IniHelper(string filename) {
-
-    }
+    IniHelper(string filename);
 
     ~IniHelper() {
-
     }
 
     /**
      * 获取一个cookie实例
      */
-    IniNode& Get(string env);
+     Status Get(string env, IniEnv& value);
 
 private:
     /**
-     * environment => IniNode
+     * environment => IniEnv
      *
      * 不在命名空间下的是global环境，全局可用。其他通过继承关系解析。
      */
-    map<string, IniNode> container_;
+    map<string, IniEnv> container_;
 };
 
-class IniNode {
+class IniEnv {
 public:
-    IniNode() {
+    IniEnv(IniEnv* parent):parent_(parent) {
 
     }
 
-    ~IniNode() {
+    ~IniEnv() {
 
     }
 
     /**
-     * 获取一个cookie实例
+     * 获取一个键的值
      */
-    IniNode& Get(string env);
+     Status Get(string key, NodeValue& value);
+
+    /**
+     * 设置一个键的值
+     */
+     Status Set(string key, NodeValue value);
 
 private:
+     IniEnv* parent_;
 
-    map<string, NodeValue> container_;
-};
-
-class NodeValue {
-public:
-    NodeValue(IniNode* value) :
-            value_(value), type_(NODE_BRANCH) {
-    }
-
-    NodeValue(string value) :
-            value_(value), type_(NODE_LEAF) {
-    }
-
-    ~NodeValue() {
-        if(type_==NODE_BRANCH){
-            delete value_.node;
-        }
-    }
-
-    enum ValueType {
-        NODE_LEAF=0,
-        NODE_BRANCH=1
-    };
-private:
-    ValueType type_;
-
-    union Value {
-        IniNode* node;
-        string value;
-    };
-
-    Value value_;
+     /**
+      * key => value
+      */
+     map<string, NodeValue*> container_;
 };
 
 } //relax
