@@ -7,12 +7,41 @@
  * @since 2014/09/17
  */
 #include <relax/ini_helper.h>
-#include <map>
+#include <fstream>
+#include <stdexcept>
 
 namespace relax {
 namespace utility {
 
-using std::map;
+Status IniHelper::Factory(string filename, IniHelper** instance){
+    try{
+        *instance=new IniHelper(filename);
+    }catch(const std::invalid_argument& e){
+        return Status::GetFail().set_message(e.what());
+    }
+
+    return Status::GetOK();
+}
+
+IniHelper::IniHelper(string& filename){
+    using std::ifstream;
+
+    ifstream ifile(filename);
+    if(!ifile){
+        string message("File");
+        throw std::invalid_argument(message+" "+filename+" doesn't exist.");
+    }
+
+    //process file
+    //Debug::out(ifile.rdbuf());
+
+
+
+
+
+
+
+}
 
 class NodeValue {
 public:

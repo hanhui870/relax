@@ -27,17 +27,22 @@ class NodeValue;
 
 class IniHelper {
 public:
-    IniHelper(string filename);
-
     ~IniHelper() {
     }
 
     /**
-     * 获取一个cookie实例
+     * 获取一个ini实例
+     */
+     static Status Factory(string filename, IniHelper** instance);
+
+    /**
+     * 获取一个环境的值
      */
      Status Get(string env, IniEnv& value);
 
 private:
+     IniHelper(string& filename);
+
     /**
      * environment => IniEnv
      *
