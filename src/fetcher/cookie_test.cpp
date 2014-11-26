@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <relax/cookie.h>
 #include <relax/timer.h>
+#include <memory>
 
 TEST(cookie, common_actions)
 {
@@ -10,7 +11,7 @@ TEST(cookie, common_actions)
 	using ::relax::Status;
 	using ::relax::fetcher::CookieValue;
 	using namespace std;
-	CookieManager* ckm=CookieManager::GetInstance();
+	std::unique_ptr<CookieManager> ckm(CookieManager::GetInstance());
 	Cookie ck=ckm->GetCookie("zjgsdx.com");
 
 	//空字符
