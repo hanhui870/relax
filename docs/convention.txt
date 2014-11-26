@@ -1,0 +1,7 @@
+库命名习惯约定，总体执行Google C++命名约定
+
+1.获取单例
+Class::GetInstance
+
+2.工厂方法获取实例
+Class::Factory
