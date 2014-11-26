@@ -13,6 +13,7 @@
 #define RELAX_RELAX_H_
 
 #include <string>
+#include <iostream>
 
 namespace relax {
 
@@ -20,8 +21,6 @@ using std::string;
 
 //relax 公共类
 //接口调用状态 Status
-class Status;
-
 class Status{
 public:
     static Status GetOK(){
@@ -96,6 +95,23 @@ private:
     string message_;
 };
 
+/**
+ * 调试类
+ */
+class Debug{
+public:
+    template<class T>
+    static void out(T);
+
+};
+
+/**
+ * 模板类的定义需要放在头文件
+ */
+template<class T>
+void Debug::out(T var){
+    std::cout<<var<<std::endl;
+}
 
 } //relax
 
