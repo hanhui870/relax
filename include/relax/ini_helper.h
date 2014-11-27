@@ -27,6 +27,8 @@ class NodeValue;
 
 class IniHelper {
 public:
+	const char* kEnvSeparator=":";
+
     ~IniHelper() {
     }
 
@@ -39,6 +41,11 @@ public:
      * 获取一个环境的值
      */
      Status Get(string env, IniEnv& value);
+
+     /**
+	  * 获取一个环境的值
+	  */
+	  Status GetOrAppend(string env, IniEnv* parent, IniEnv& value);
 
 private:
      IniHelper(string& filename);
@@ -53,7 +60,7 @@ private:
 
 class IniEnv {
 public:
-    IniEnv(IniEnv* parent):parent_(parent) {
+    IniEnv() {
 
     }
 
@@ -70,6 +77,9 @@ public:
      * 设置一个键的值
      */
      Status Set(string key, NodeValue value);
+
+     Status set_parent (IniEnv* parent);
+     Status get_parent (IniEnv* parent);
 
 private:
      IniEnv* parent_;
