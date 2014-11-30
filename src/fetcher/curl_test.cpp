@@ -33,6 +33,7 @@ TEST(curl, fetch_taobao_com)
 
     Status s=curl->get("www.taobao.com", r);
     EXPECT_EQ(true, s.IsOK());
+    //relax::Debug::out(r);
     if(s.IsFail()) cout<<"Status error message: "<<s.message()<<endl;
     EXPECT_LT(0, r.length());
 }

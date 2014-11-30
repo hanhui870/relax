@@ -65,7 +65,7 @@ IniHelper::IniHelper(string& filename){
 
     		vector<string> env_info=StringHelper::Explode(env_text, kEnvSeparator);
     		if(env_info.size()>2){
-				string message("Env inheritence like [child : parent], no more than 3 level, line ");
+				string message("Env inheritance like [child : parent], no more than 3 level, line ");
     			throw std::invalid_argument(message + GetNumberText(line_number));
     		}
 
