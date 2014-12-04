@@ -24,7 +24,7 @@ TEST(cookie, common_actions)
 	EXPECT_EQ(true, s.IsOK());
 
 	//测试返回是引用 必须引用才为true 这里复制了token
-	Cookie ck2=ckm->GetCookie("zjgsdx.com");
+	Cookie& ck2=ckm->GetCookie("zjgsdx.com");
 	//失败，不能修改CookieManager中的值
 	//Cookie ck2=ckm->GetCookie("zjgsdx.com");
 
