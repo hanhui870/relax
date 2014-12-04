@@ -310,8 +310,6 @@ public:
         }
     }
 
-    string ToString();
-
 private:
     // name => value
     map<string, CookieValue> container_;

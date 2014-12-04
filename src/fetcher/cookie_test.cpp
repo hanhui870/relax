@@ -12,7 +12,7 @@ TEST(cookie, common_actions)
 	using ::relax::fetcher::CookieValue;
 	using namespace std;
 	std::unique_ptr<CookieManager> ckm(CookieManager::GetInstance());
-	Cookie ck=ckm->GetCookie("zjgsdx.com");
+	Cookie& ck=ckm->GetCookie("zjgsdx.com");
 
 	//空字符
 	string tmp("");
@@ -23,14 +23,31 @@ TEST(cookie, common_actions)
 	s=ck.Add("Token=v2gscbncfz5gk5bx4xphlkma4rlnvm13l65er8ix; expires=Fri, 20-Sep-2019 03:16:02 GMT; path=/; HttpOnly; secure;");
 	EXPECT_EQ(true, s.IsOK());
 
-	s=ck.Add("spanner=peFXug9jwtvpRIuthTpRynbA4ws1VM1/;path=/;secure;");
+	//测试返回是引用 必须引用才为true 这里复制了token
+	Cookie ck2=ckm->GetCookie("zjgsdx.com");
+	//失败，不能修改CookieManager中的值
+	//Cookie ck2=ckm->GetCookie("zjgsdx.com");
+
+	s=ck2.Add("spanner=peFXug9jwtvpRIuthTpRynbA4ws1VM1/;path=/;secure;");
 	s=ck.Add("umt=HBf4721f420e82d869184a949e2eefcc2a; Domain=.alipay.com; Path=/; HttpOnly");
 	s=ck.Add("CAT=deleted; expires=Fri, 27-Sep-2013 15:21:13 GMT");
 	s=ck.Add("OUTFOX_SEARCH_USER_ID=551468692@58.101.75.242; domain=huihui.cn; path=/; expires=Mon, 19-Sep-2044 15:21:15 GMT");
 
 	//key=>value pair test
-	s=ck.Add("hanhui", "zhujingfa");
+	s=ck2.Add("hanhui", "zhujingfa");
 	EXPECT_EQ(true, s.IsOK());
+
+	ckm->GetCookie("zjgsdx.com").GetAll(tmp);
+	std::cout<<"CookieManager Result:";
+	relax::Debug::out(tmp);
+
+	ck.GetAll(tmp);
+	std::cout<<"ck ref Result:";
+	relax::Debug::out(tmp);
+
+	ck2.GetAll(tmp);
+	std::cout<<"ck2 var  Result:";
+	relax::Debug::out(tmp);
 
 	CookieValue value;
 	s=ck.Get("hanhui", value);
