@@ -40,12 +40,12 @@ public:
     /**
      * 获取一个环境的值
      */
-     Status Get(string env, IniEnv& value);
+     Status Get(string env, IniEnv** value);
 
      /**
 	  * 获取一个环境的值
 	  */
-	  Status GetOrAppend(string env, IniEnv* parent, IniEnv& value);
+	  Status GetOrAppend(string env, IniEnv* parent, IniEnv** value);
 
 private:
      IniHelper(string& filename);
@@ -60,7 +60,7 @@ private:
 
 class IniEnv {
 public:
-    IniEnv() {
+    IniEnv() : parent_(NULL) {
 
     }
 
@@ -79,7 +79,7 @@ public:
      Status Set(string key, NodeValue value);
 
      Status set_parent (IniEnv* parent);
-     Status get_parent (IniEnv* parent);
+     Status parent (IniEnv* parent);
 
 private:
      IniEnv* parent_;

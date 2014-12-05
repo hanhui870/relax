@@ -16,9 +16,82 @@ CookieValue& CookieValue::operator=(const CookieValue& rvalue){
     return *this;
 }
 
+CookieString::CookieString(string str) :
+		CookieValue(){
+
+	using relax::utility::StringHelper;
+	auto result = StringHelper::Explode(StringHelper::Trim(str), kDelimiter);
+
+	//处理name
+	//parse 这里的解析应该用at，而不是直接数组。参数env_helper
+	{
+		string& tmp =  result.at(0);
+		if (tmp.find(kAssign) != string::npos) {
+			name_ = tmp.substr(0, tmp.find(kAssign));
+			value_ = tmp.substr(tmp.find(kAssign) + 1);
+		} else {
+			//Exception 无效的cookie
+			throw invalid_argument(string("Invalid cookie string: ") + str);
+		}
+	}
+
+	std::vector<string>::size_type size;
+	for (size = 1; size < result.size(); size++) {
+		string& tmp = result.at(size);
+		if(StringHelper::Trim(tmp).size()==0) continue;
+
+		if (tmp.find(kAssign) != string::npos) {
+			string key = StringHelper::Trim(tmp.substr(0, tmp.find(kAssign)));
+			string value = StringHelper::Trim(tmp.substr(tmp.find(kAssign) + 1));
+			if(key.size()==0) continue;
+
+			string up;
+			StringHelper::ToUpper(key, up);
+
+			if (up.compare("EXPIRES") == 0) {
+				TimeHelper::second sec;
+				Status s=TimeHelper::CookieTimeToStamp(value, sec);
+				if(s.IsOK()){
+					expire_ = sec;
+				}else{
+					throw invalid_argument(string("Invalid cookie expire string: ") + value);
+				}
+
+			} else if (up.compare("PATH") == 0) {
+				path_ = value;
+			}
+
+		} else {
+			string key = StringHelper::Trim(tmp);
+			if(key.size()==0) continue;
+
+			string up;
+			StringHelper::ToUpper(key, up);
+
+			if (up.compare("HTTPONLY") == 0) {
+				httponly_ = true;
+			} else if (up.compare("SECURE") == 0) {
+				secure_ = true;
+			}
+		}
+	}
+}
+
 CookieString::CookieString(string key, CookieValue value) :
-    name_(key), value_(value.value()), path_(value.path()), expire_(value.expire()),
-    httponly_(value.httponly()), secure_(value.secure()) {
+    name_(key), CookieValue(value) {
+}
+
+string CookieString::ToString() {
+   string time;
+   TimeHelper::StampToCookieTime(expire_, time);
+   string result = name_ + "=" + value_ + ";" + " expires=" + time + ";"+ " path=" + path_ + ";";
+   if (httponly_) {
+	   result += " HttpOnly;";
+   }
+   if (secure_) {
+	   result += " Secure;";
+   }
+   return result;
 }
 
 CookieString& CookieString::operator=(const CookieString& rvalue){
@@ -111,6 +184,16 @@ Status Cookie::GetAll(string& value) {
 
     value="";
     return Status::GetFail().set_message("Empty cookie.");
+}
+
+Status Cookie::Delete(string name) {
+	decltype(container_)::size_type deleted=container_.erase(name);
+
+	if(deleted>0) {
+		return Status::GetOK();
+	} else {
+		return Status::GetFail();
+	}
 }
 
 

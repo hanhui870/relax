@@ -69,8 +69,8 @@ IniHelper::IniHelper(string& filename){
     			throw std::invalid_argument(message + GetNumberText(line_number));
     		}
 
-    		IniEnv parent;
-    		IniEnv child;
+    		IniEnv* parent;
+    		IniEnv* child;
     		if(env_info.size()==2){
     			string env_parent=StringHelper::Trim(env_info[1]);
     			Status s=GetOrAppend(env_parent, NULL, parent);
@@ -104,11 +104,16 @@ IniHelper::IniHelper(string& filename){
 
 
 
+}
 
+Status IniHelper::Get(string env, IniEnv** value){
 
+    return Status::GetOK();
+}
 
+Status IniHelper::GetOrAppend(string env, IniEnv* parent, IniEnv** value){
 
-
+    return Status::GetOK();
 }
 
 /**
