@@ -1,8 +1,15 @@
 #include <vector>
 #include <relax/cookie.h>
+#include <relax/string_helper.h>
+#include <relax/time_helper.h>
 
 namespace relax {
 namespace fetcher {
+
+using std::exception;
+using std::invalid_argument;
+using utility::StringHelper;
+using utility::TimeHelper;
 
 CookieValue& CookieValue::operator=(const CookieValue& rvalue){
     if(this != &rvalue){
@@ -121,12 +128,15 @@ Cookie& CookieManager::GetCookie(string domain) {
     return container_[domain];
 }
 
-Status Cookie::Add(CookieString& cookie_obj) {
+Status Cookie::Add(CookieString cookie_obj) {
     //有效期小于当前删除Cookie
     if(cookie_obj.expire()>0 && cookie_obj.expire()<TimeHelper::Time()){
         return Delete(cookie_obj.name()).set_message("expire<Now, delete it.");
     }
-    container_[cookie_obj.name()] = CookieValue(cookie_obj);
+    CookieValue tmp(cookie_obj);
+    //下面语句不行，key要const
+    //container_[cookie_obj.name()] = tmp;
+    container_.insert(decltype(container_)::value_type(cookie_obj.name(), tmp));
 
     return Status::GetOK();
 }
@@ -142,7 +152,8 @@ Status Cookie::Add(string cookie_str) {
 }
 
 Status Cookie::Add(string name, string value) {
-    container_[name] = CookieValue(value);
+    CookieValue tmp(value);
+    container_.insert(decltype(container_)::value_type(name, tmp));
 
     return Status::GetOK();
 }

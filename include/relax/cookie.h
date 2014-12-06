@@ -14,19 +14,12 @@
 #include <exception>
 #include <stdexcept>
 #include <relax/relax.h>
-#include <relax/string_helper.h>
-#include <relax/time_helper.h>
 
 namespace relax {
 namespace fetcher {
 
 using std::map;
 using std::string;
-using std::exception;
-using std::invalid_argument;
-using utility::StringHelper;
-using utility::TimeHelper;
-
 class Cookie;
 
 class CookieManager {
@@ -66,9 +59,9 @@ public:
             value_(cookie_str), path_("/"), expire_(0), httponly_(false), secure_(false) {
     }
 
-    CookieValue(CookieValue& cookie_obj) :
-            value_(cookie_obj.value()), path_(cookie_obj.path()), expire_(cookie_obj.expire()),
-            httponly_(cookie_obj.httponly()), secure_(cookie_obj.secure()) {
+    CookieValue(const CookieValue& cookie_obj) :
+            value_(cookie_obj.value_), path_(cookie_obj.path_), expire_(cookie_obj.expire_),
+            httponly_(cookie_obj.httponly_), secure_(cookie_obj.secure_) {
     }
 
     ~CookieValue() {
@@ -185,7 +178,7 @@ public:
     /**
      *添加一个cookie，多次添加直接覆盖
      */
-    Status Add(CookieString& cookie_obj);
+    Status Add(CookieString cookie_obj);
     Status Add(string cookie_str);
     Status Add(string name, string value);
 
