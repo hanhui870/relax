@@ -11,6 +11,51 @@ using std::invalid_argument;
 using utility::StringHelper;
 using utility::TimeHelper;
 
+Status CookieManager::reset(){
+	decltype(container_)::iterator iter;
+
+	for(iter=container_.begin(); iter!=container_.end(); ++iter){
+		delete iter->second;
+		iter->second=NULL;
+	}
+
+	container_.clear();
+
+	return Status::GetOK();
+}
+
+CookieManager::~CookieManager(){
+	reset();
+}
+
+CookieManager* CookieManager::instance_ = NULL;
+
+CookieManager& CookieManager::GetInstance() {
+    if (CookieManager::instance_ == NULL) {
+        CookieManager::instance_ = new CookieManager();
+    }
+
+    return *CookieManager::instance_;
+}
+
+Cookie& CookieManager::GetCookie(string domain) {
+	if(!container_.count(domain)){
+		container_.insert(std::make_pair(domain, new Cookie()));
+	}
+    return *container_[domain];
+}
+
+Status CookieManager::DeleteDomain(string domain) {
+	decltype(container_)::iterator iter;
+	if((iter=container_.find(domain))->second){
+		delete iter->second;
+		container_.erase(domain);
+
+		return Status::GetOK();
+	}
+    return Status::GetFail().set_message("Not found.");
+}
+
 CookieValue& CookieValue::operator=(const CookieValue& rvalue){
     if(this != &rvalue){
         value_=rvalue.value_;
@@ -114,29 +159,13 @@ CookieString& CookieString::operator=(const CookieString& rvalue){
     return *this;
 }
 
-CookieManager* CookieManager::instance_ = NULL;
-
-CookieManager* CookieManager::GetInstance() {
-    if (CookieManager::instance_ == NULL) {
-        CookieManager::instance_ = new CookieManager();
-    }
-
-    return CookieManager::instance_;
-}
-
-Cookie& CookieManager::GetCookie(string domain) {
-    return container_[domain];
-}
-
 Status Cookie::Add(CookieString cookie_obj) {
     //有效期小于当前删除Cookie
     if(cookie_obj.expire()>0 && cookie_obj.expire()<TimeHelper::Time()){
         return Delete(cookie_obj.name()).set_message("expire<Now, delete it.");
     }
     CookieValue tmp(cookie_obj);
-    //下面语句不行，key要const
-    //container_[cookie_obj.name()] = tmp;
-    container_.insert(decltype(container_)::value_type(cookie_obj.name(), tmp));
+    container_[cookie_obj.name()] = tmp;
 
     return Status::GetOK();
 }
@@ -152,8 +181,7 @@ Status Cookie::Add(string cookie_str) {
 }
 
 Status Cookie::Add(string name, string value) {
-    CookieValue tmp(value);
-    container_.insert(decltype(container_)::value_type(name, tmp));
+    container_[name]=CookieValue(value);
 
     return Status::GetOK();
 }

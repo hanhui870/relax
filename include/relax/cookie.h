@@ -24,29 +24,72 @@ class Cookie;
 
 class CookieManager {
 public:
-    CookieManager() {
-    }
-
-    ~CookieManager() {
-
-    }
-
     /**
      * 获取一个cookie管理实例
      */
-    static CookieManager* GetInstance();
+    static CookieManager& GetInstance();
 
     /**
      * 获取一个cookie实例
+     * 返回的指针使用完不需要清楚
+     *
+     * 这里指针返回值比引用好，引用容易被误用，下面缺少&符号就出错了
+     * Cookie& ck2=ckm->GetCookie("zjgsdx.com");
      */
     Cookie& GetCookie(string domain);
 
+    /**
+	 * 删除一个域名的Cookie实例
+	 */
+	Status DeleteDomain(string domain);
+
+    /**
+     * 重置整个Cookie库
+     */
+    Status reset();
+
 private:
+    CookieManager(){}
+    ~CookieManager();
+    CookieManager(const CookieManager&);
+    CookieManager& operator = (const CookieManager&);
+
     //domain => cookie
-    map<string, Cookie> container_;
+    map<string, Cookie*> container_;
 
     static CookieManager* instance_;
 };
+
+class CookieValue;
+class CookieString;
+
+class Cookie {
+public:
+    /**
+     *添加一个cookie，多次添加直接覆盖
+     */
+    Status Add(CookieString cookie_obj);
+    Status Add(string cookie_str);
+    Status Add(string name, string value);
+
+    //获取Cookie
+    Status Get(string name, CookieValue& value);
+    Status Get(string name, CookieString& obj);
+    Status GetAll(string& value);
+
+    Status Delete(string name);
+
+protected:
+    friend class CookieManager;
+    Cookie(){}
+    Cookie(const Cookie&);
+    Cookie& operator = (const Cookie&);
+
+private:
+    // name => value
+    map<string, CookieValue> container_;
+};
+
 
 //cookie值
 class CookieValue {
@@ -78,6 +121,11 @@ public:
     string value() {
         return value_;
     }
+
+    Status set_value(string value) {
+    	value_=value;
+		return Status::GetOK();
+	}
 
     string path() {
         return path_;
@@ -164,34 +212,6 @@ public:
 
 protected:
     string name_;
-};
-
-class Cookie {
-public:
-    Cookie() {
-    }
-
-    ~Cookie() {
-
-    }
-
-    /**
-     *添加一个cookie，多次添加直接覆盖
-     */
-    Status Add(CookieString cookie_obj);
-    Status Add(string cookie_str);
-    Status Add(string name, string value);
-
-    //获取Cookie
-    Status Get(string name, CookieValue& value);
-    Status Get(string name, CookieString& obj);
-    Status GetAll(string& value);
-
-    Status Delete(string name);
-
-private:
-    // name => value
-    map<string, CookieValue> container_;
 };
 
 }//relax
