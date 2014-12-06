@@ -1,11 +1,11 @@
 CPP=g++
 
 
-server.test: main.o
-	$(CPP) -o main.test main.o
+test.exe: main.o
+	$(CPP) -o main.exe main.o
 
 main.o: main.cpp
 	$(CPP) -c main.cpp
 
 clean:
-	rm main.o main.test
+	rm main.o main.exe
