@@ -37,8 +37,7 @@ TEST(cookie, common_actions)
 		relax::Debug::out(tmp);
 		EXPECT_STREQ("", tmp.c_str());
 
-		Cookie& ck2=ckm.GetCookie("zjgsdx.com");
-		s=ck2.Add("Token=v2gscbncfz5gk5bx4xphlkma4rlnvm13l65er8ix; expires=Fri, 20-Sep-2019 03:16:02 GMT; path=/; HttpOnly; secure;");
+		s=ckm.GetCookie("zjgsdx.com").Add("Token=v2gscbncfz5gk5bx4xphlkma4rlnvm13l65er8ix; expires=Fri, 20-Sep-2019 03:16:02 GMT; path=/; HttpOnly; secure;");
 		EXPECT_EQ(true, s.IsOK());
 	}
 
@@ -53,12 +52,12 @@ TEST(cookie, common_actions)
 	EXPECT_STREQ("Token=newadd ed; ", tmp.c_str());
 
 	{
-		Cookie& ck2=ckm.GetCookie("zjgsdx.com");
-		s=ck2.Add("spanner=peFXug9jwtvpRIuthTpRynbA4ws1VM1/;path=/;secure;");
-		s=ck2.Add("umt=HBf4721f420e82d869184a949e2eefcc2a; Domain=.alipay.com; Path=/; HttpOnly");
-		s=ck2.Add("CAT=deleted; expires=Fri, 27-Sep-2013 15:21:13 GMT");
-		s=ck2.Add("OUTFOX_SEARCH_USER_ID=551468692@58.101.75.242; domain=huihui.cn; path=/; expires=Mon, 19-Sep-2044 15:21:15 GMT");
-		s=ck2.Add("hanhui", "zhujingfa");
+		Cookie& ck=ckm.GetCookie("zjgsdx.com");
+		s=ck.Add("spanner=peFXug9jwtvpRIuthTpRynbA4ws1VM1/;path=/;secure;");
+		s=ck.Add("umt=HBf4721f420e82d869184a949e2eefcc2a; Domain=.alipay.com; Path=/; HttpOnly");
+		s=ck.Add("CAT=deleted; expires=Fri, 27-Sep-2013 15:21:13 GMT");
+		s=ck.Add("OUTFOX_SEARCH_USER_ID=551468692@58.101.75.242; domain=huihui.cn; path=/; expires=Mon, 19-Sep-2044 15:21:15 GMT");
+		s=ck.Add("hanhui", "zhujingfa");
 		EXPECT_EQ(true, s.IsOK());
 
 		ckm.GetCookie("zjgsdx.com").GetAll(tmp);
@@ -66,25 +65,25 @@ TEST(cookie, common_actions)
 		relax::Debug::out(tmp);
 
 		CookieValue value;
-		s=ck2.Get("hanhui", value);
+		s=ck.Get("hanhui", value);
 		EXPECT_STREQ("zhujingfa", value.value().c_str());
-		s=ck2.Get("Token", value);
+		s=ck.Get("Token", value);
 		EXPECT_STREQ("newadd ed", value.value().c_str());
 		CookieString cstr;
-		s=ck2.Get("Token", cstr);
+		s=ck.Get("Token", cstr);
 		cout<<"Cookie Token string:"<<cstr.ToString()<<endl;
 
-		s=ck2.Get("OUTFOX_SEARCH_USER_ID", cstr);
+		s=ck.Get("OUTFOX_SEARCH_USER_ID", cstr);
 		cout<<"Cookie OUTFOX_SEARCH_USER_ID string:"<<cstr.ToString()<<endl;
 
-		s=ck2.Add("sechrefdafda");
+		s=ck.Add("sechrefdafda");
 		if(s.IsFail()){
 			cout<<"Failed to add: "<<s.message()<<endl;
 		}
 		EXPECT_EQ(false, s.IsOK());
 
 		string result;
-		s=ck2.GetAll(result);
+		s=ck.GetAll(result);
 		cout<<"Result KV string: "<<result<<endl;
 		EXPECT_STREQ("OUTFOX_SEARCH_USER_ID=551468692@58.101.75.242; Token=newadd ed; hanhui=zhujingfa; spanner=peFXug9jwtvpRIuthTpRynbA4ws1VM1/; umt=HBf4721f420e82d869184a949e2eefcc2a; ", result.c_str());
 		EXPECT_EQ(true, s.IsOK());

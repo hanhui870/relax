@@ -12,6 +12,7 @@ using utility::StringHelper;
 using utility::TimeHelper;
 
 Status CookieManager::reset(){
+	std::lock_guard<std::mutex> lg(mutex_);
 	decltype(container_)::iterator iter;
 
 	for(iter=container_.begin(); iter!=container_.end(); ++iter){
@@ -25,12 +26,15 @@ Status CookieManager::reset(){
 }
 
 CookieManager::~CookieManager(){
+	std::lock_guard<std::mutex> lg(mutex_);
 	reset();
 }
 
 CookieManager* CookieManager::instance_ = NULL;
+std::mutex CookieManager::mutex_;
 
 CookieManager& CookieManager::GetInstance() {
+	std::lock_guard<std::mutex> lg(mutex_);
     if (CookieManager::instance_ == NULL) {
         CookieManager::instance_ = new CookieManager();
     }
@@ -39,6 +43,7 @@ CookieManager& CookieManager::GetInstance() {
 }
 
 Cookie& CookieManager::GetCookie(string domain) {
+	std::lock_guard<std::mutex> lg(mutex_);
 	if(!container_.count(domain)){
 		container_.insert(std::make_pair(domain, new Cookie()));
 	}
@@ -46,6 +51,7 @@ Cookie& CookieManager::GetCookie(string domain) {
 }
 
 Status CookieManager::DeleteDomain(string domain) {
+	std::lock_guard<std::mutex> lg(mutex_);
 	decltype(container_)::iterator iter;
 	if((iter=container_.find(domain))->second){
 		delete iter->second;
@@ -164,6 +170,8 @@ Status Cookie::Add(CookieString cookie_obj) {
     if(cookie_obj.expire()>0 && cookie_obj.expire()<TimeHelper::Time()){
         return Delete(cookie_obj.name()).set_message("expire<Now, delete it.");
     }
+
+    std::lock_guard<std::mutex> lg(mutex_);
     CookieValue tmp(cookie_obj);
     container_[cookie_obj.name()] = tmp;
 
@@ -181,6 +189,7 @@ Status Cookie::Add(string cookie_str) {
 }
 
 Status Cookie::Add(string name, string value) {
+	std::lock_guard<std::mutex> lg(mutex_);
     container_[name]=CookieValue(value);
 
     return Status::GetOK();
@@ -226,6 +235,7 @@ Status Cookie::GetAll(string& value) {
 }
 
 Status Cookie::Delete(string name) {
+	std::lock_guard<std::mutex> lg(mutex_);
 	decltype(container_)::size_type deleted=container_.erase(name);
 
 	if(deleted>0) {

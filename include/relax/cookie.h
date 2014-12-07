@@ -13,6 +13,7 @@
 #include <string>
 #include <exception>
 #include <stdexcept>
+#include <mutex>
 #include <relax/relax.h>
 
 namespace relax {
@@ -56,8 +57,8 @@ private:
 
     //domain => cookie
     map<string, Cookie*> container_;
-
     static CookieManager* instance_;
+    static std::mutex mutex_;
 };
 
 class CookieValue;
@@ -88,6 +89,7 @@ protected:
 private:
     // name => value
     map<string, CookieValue> container_;
+    std::mutex mutex_;
 };
 
 
