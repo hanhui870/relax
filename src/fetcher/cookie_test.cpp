@@ -12,92 +12,82 @@ TEST(cookie, common_actions)
 	using ::relax::fetcher::CookieValue;
 	using namespace std;
 	CookieManager& ckm =CookieManager::GetInstance();
-	Cookie& ck=ckm.GetCookie("zjgsdx.com");
-
-
 	//空字符
-	string tmp("");
-	cout<<"blank string size:"<<tmp.size()<<endl;
-	EXPECT_EQ(0, tmp.size());
+    string tmp("");
+    Status s;
 
-	Status s;
-	s=ck.Add("Token=v2gscbncfz5gk5bx4xphlkma4rlnvm13l65er8ix; expires=Fri, 20-Sep-2019 03:16:02 GMT; path=/; HttpOnly; secure;");
-	EXPECT_EQ(true, s.IsOK());
+	{
+		Cookie& ck=ckm.GetCookie("zjgsdx.com");
 
-	ckm.GetCookie("zjgsdx.com").GetAll(tmp);
-	std::cout<<"CookieManager 1 Result:";
-	relax::Debug::out(tmp);
-	EXPECT_STREQ("Token=v2gscbncfz5gk5bx4xphlkma4rlnvm13l65er8ix; ", tmp.c_str());
+		cout<<"blank string size:"<<tmp.size()<<endl;
+		EXPECT_EQ(0, tmp.size());
 
-	//删除一个域名
-	ckm.DeleteDomain("zjgsdx.com");
-	ckm.GetCookie("zjgsdx.com").GetAll(tmp);
-	std::cout<<"CookieManager 2 Result:";
-	relax::Debug::out(tmp);
-	EXPECT_STREQ("", tmp.c_str());
+		s=ck.Add("Token=v2gscbncfz5gk5bx4xphlkma4rlnvm13l65er8ix; expires=Fri, 20-Sep-2019 03:16:02 GMT; path=/; HttpOnly; secure;");
+		EXPECT_EQ(true, s.IsOK());
 
-	Cookie& ck2=ckm.GetCookie("zjgsdx.com");
-	s=ck2.Add("Token=v2gscbncfz5gk5bx4xphlkma4rlnvm13l65er8ix; expires=Fri, 20-Sep-2019 03:16:02 GMT; path=/; HttpOnly; secure;");
-	EXPECT_EQ(true, s.IsOK());
+		ckm.GetCookie("zjgsdx.com").GetAll(tmp);
+		std::cout<<"CookieManager 1 Result:";
+		relax::Debug::out(tmp);
+		EXPECT_STREQ("Token=v2gscbncfz5gk5bx4xphlkma4rlnvm13l65er8ix; ", tmp.c_str());
+
+		//删除一个域名
+		ckm.DeleteDomain("zjgsdx.com");
+		ckm.GetCookie("zjgsdx.com").GetAll(tmp);
+		std::cout<<"CookieManager 2 Result:";
+		relax::Debug::out(tmp);
+		EXPECT_STREQ("", tmp.c_str());
+
+		Cookie& ck2=ckm.GetCookie("zjgsdx.com");
+		s=ck2.Add("Token=v2gscbncfz5gk5bx4xphlkma4rlnvm13l65er8ix; expires=Fri, 20-Sep-2019 03:16:02 GMT; path=/; HttpOnly; secure;");
+		EXPECT_EQ(true, s.IsOK());
+	}
+
 
 	//清空整个库 所有之前的cookie引用失效
 	ckm.reset();
+	s=ckm.GetCookie("zjgsdx.com").Add("Token=newadd ed; expires=Fri, 20-Sep-2019 03:16:02 GMT; path=/; HttpOnly; secure;");
+	EXPECT_EQ(true, s.IsOK());
 	ckm.GetCookie("zjgsdx.com").GetAll(tmp);
 	std::cout<<"CookieManager 3 Result:";
 	relax::Debug::out(tmp);
-	EXPECT_STREQ("", tmp.c_str());
+	EXPECT_STREQ("Token=newadd ed; ", tmp.c_str());
 
-	s=ck.Add("Token=v2gscbncfz5gk5bx4xphlkma4rlnvm13l65er8ix; expires=Fri, 20-Sep-2019 03:16:02 GMT; path=/; HttpOnly; secure;");
-	EXPECT_EQ(true, s.IsOK());
+	{
+		Cookie& ck2=ckm.GetCookie("zjgsdx.com");
+		s=ck2.Add("spanner=peFXug9jwtvpRIuthTpRynbA4ws1VM1/;path=/;secure;");
+		s=ck2.Add("umt=HBf4721f420e82d869184a949e2eefcc2a; Domain=.alipay.com; Path=/; HttpOnly");
+		s=ck2.Add("CAT=deleted; expires=Fri, 27-Sep-2013 15:21:13 GMT");
+		s=ck2.Add("OUTFOX_SEARCH_USER_ID=551468692@58.101.75.242; domain=huihui.cn; path=/; expires=Mon, 19-Sep-2044 15:21:15 GMT");
+		s=ck2.Add("hanhui", "zhujingfa");
+		EXPECT_EQ(true, s.IsOK());
 
-	/*
-	//测试返回是引用 必须引用才为true 这里复制了token
-	Cookie& ck2=ckm->GetCookie("zjgsdx.com");
-	//失败，不能修改CookieManager中的值
-	//Cookie ck2=ckm->GetCookie("zjgsdx.com");
+		ckm.GetCookie("zjgsdx.com").GetAll(tmp);
+		std::cout<<"CookieManager Result:";
+		relax::Debug::out(tmp);
 
-	s=ck2.Add("spanner=peFXug9jwtvpRIuthTpRynbA4ws1VM1/;path=/;secure;");
-	s=ck.Add("umt=HBf4721f420e82d869184a949e2eefcc2a; Domain=.alipay.com; Path=/; HttpOnly");
-	s=ck.Add("CAT=deleted; expires=Fri, 27-Sep-2013 15:21:13 GMT");
-	s=ck.Add("OUTFOX_SEARCH_USER_ID=551468692@58.101.75.242; domain=huihui.cn; path=/; expires=Mon, 19-Sep-2044 15:21:15 GMT");
+		CookieValue value;
+		s=ck2.Get("hanhui", value);
+		EXPECT_STREQ("zhujingfa", value.value().c_str());
+		s=ck2.Get("Token", value);
+		EXPECT_STREQ("newadd ed", value.value().c_str());
+		CookieString cstr;
+		s=ck2.Get("Token", cstr);
+		cout<<"Cookie Token string:"<<cstr.ToString()<<endl;
 
-	//key=>value pair test
-	s=ck2.Add("hanhui", "zhujingfa");
-	EXPECT_EQ(true, s.IsOK());
+		s=ck2.Get("OUTFOX_SEARCH_USER_ID", cstr);
+		cout<<"Cookie OUTFOX_SEARCH_USER_ID string:"<<cstr.ToString()<<endl;
 
-	ckm->GetCookie("zjgsdx.com").GetAll(tmp);
-	std::cout<<"CookieManager Result:";
-	relax::Debug::out(tmp);
+		s=ck2.Add("sechrefdafda");
+		if(s.IsFail()){
+			cout<<"Failed to add: "<<s.message()<<endl;
+		}
+		EXPECT_EQ(false, s.IsOK());
 
-	ck.GetAll(tmp);
-	std::cout<<"ck ref Result:";
-	relax::Debug::out(tmp);
-
-	ck2.GetAll(tmp);
-	std::cout<<"ck2 var  Result:";
-	relax::Debug::out(tmp);
-
-	CookieValue value;
-	s=ck.Get("hanhui", value);
-	EXPECT_STREQ("zhujingfa", value.value().c_str());
-	s=ck.Get("Token", value);
-	EXPECT_STREQ("v2gscbncfz5gk5bx4xphlkma4rlnvm13l65er8ix", value.value().c_str());
-	CookieString cstr;
-	s=ck.Get("Token", cstr);
-	cout<<"Cookie Token string:"<<cstr.ToString()<<endl;
-
-    s=ck.Get("OUTFOX_SEARCH_USER_ID", cstr);
-    cout<<"Cookie OUTFOX_SEARCH_USER_ID string:"<<cstr.ToString()<<endl;
-
-	s=ck.Add("sechrefdafda");
-	if(s.IsFail()){
-	    cout<<"Failed to add: "<<s.message()<<endl;
+		string result;
+		s=ck2.GetAll(result);
+		cout<<"Result KV string: "<<result<<endl;
+		EXPECT_STREQ("OUTFOX_SEARCH_USER_ID=551468692@58.101.75.242; Token=newadd ed; hanhui=zhujingfa; spanner=peFXug9jwtvpRIuthTpRynbA4ws1VM1/; umt=HBf4721f420e82d869184a949e2eefcc2a; ", result.c_str());
+		EXPECT_EQ(true, s.IsOK());
 	}
-	EXPECT_EQ(false, s.IsOK());
 
-	string result;
-	s=ck.GetAll(result);
-	cout<<"Result KV string: "<<result<<endl;
-	EXPECT_STREQ("OUTFOX_SEARCH_USER_ID=551468692@58.101.75.242; Token=v2gscbncfz5gk5bx4xphlkma4rlnvm13l65er8ix; hanhui=zhujingfa; spanner=peFXug9jwtvpRIuthTpRynbA4ws1VM1/; umt=HBf4721f420e82d869184a949e2eefcc2a; ", result.c_str());
-	EXPECT_EQ(true, s.IsOK());*/
 }
