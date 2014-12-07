@@ -14,9 +14,9 @@ TEST(ini_helper, common_actions)
 {
     relax::timer t;
 
-    //测试string的标准长度
+    //测试string的标准长度 64位是8 32位是4
     cout<<"std::string size="<<sizeof(string)<<endl;
-    EXPECT_EQ(4, sizeof(string));
+    EXPECT_EQ(8, sizeof(string));
 
     IniHelper* ini=NULL;
     Status s=IniHelper::Factory("ini-test/app-not-exist.ini", &ini);
@@ -28,7 +28,7 @@ TEST(ini_helper, common_actions)
     if(s.IsFail()){
         cout<<"Failed factory IniHelper instance: "<<s.message()<<endl;
     }else{
-        cout<<"Failed factory IniHelper instance address: "<<ini<<endl;
+        cout<<"Factory IniHelper instance address: "<<ini<<endl;
     }
     std::unique_ptr<IniHelper> iniptr(ini);
 

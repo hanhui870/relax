@@ -29,6 +29,39 @@ Status IniHelper::Factory(string filename, IniHelper** instance){
     return Status::GetOK();
 }
 
+Status IniHelper::GetGlobalIni(IniEnv** global)
+{
+	*global=NULL;
+	Status s=GetOrAppend(kGlobalIni, NULL, global);
+	if(s.IsFail()){
+		throw std::invalid_argument("Initialize global ini section failed.");
+	}
+	return s;
+}
+
+
+Status IniHelper::Get(string env, IniEnv** value){
+	if(!container_.count(env)){
+		Status::GetFail().set_message("Not found.");
+	}
+	*value=container_[env];
+    return Status::GetOK();
+}
+
+Status IniHelper::GetOrAppend(string env, IniEnv* parent, IniEnv** value){
+	if(!container_.count(env)){
+		if(env!=kGlobalIni && parent==NULL){
+			Status s;
+			if((s=GetGlobalIni(&parent)).IsFail()){
+				throw std::invalid_argument(s.message());
+			}
+		}
+		container_.insert(std::make_pair(env, new IniEnv(parent)));
+	}
+	*value=container_[env];
+    return Status::GetOK();
+}
+
 IniHelper::IniHelper(string& filename){
     using std::ifstream;
     const int kLineBufferSize=1024;
@@ -42,6 +75,14 @@ IniHelper::IniHelper(string& filename){
     char* buffer=new char[kLineBufferSize];
     //process file
     int line_number=0;
+    IniEnv* current=NULL;
+    {
+    	Status s;
+		if((s=GetGlobalIni(&current)).IsFail()){
+			throw std::invalid_argument(s.message());
+		}
+    }
+
     while(ifile.getline(buffer, kLineBufferSize)){
     	line_number++;
     	char* begin_char=buffer;
@@ -54,6 +95,7 @@ IniHelper::IniHelper(string& filename){
     		break;
 
     	case '[':
+    	{//需要大括号规范变量作用域，不然可能报错
     		if(buffer[std::strlen(buffer)-1] != ']'){
     			 string message("Line format error, must begin with \"[\" end with \"]\", line ");
     			 throw std::invalid_argument(message + GetNumberText(line_number) +" read: "+buffer);
@@ -69,51 +111,76 @@ IniHelper::IniHelper(string& filename){
     			throw std::invalid_argument(message + GetNumberText(line_number));
     		}
 
-    		IniEnv* parent;
-    		IniEnv* child;
+    		IniEnv* parent=NULL;
+    		IniEnv* child=NULL;
     		if(env_info.size()==2){
     			string env_parent=StringHelper::Trim(env_info[1]);
-    			Status s=GetOrAppend(env_parent, NULL, parent);
+    			Status s=GetOrAppend(env_parent, NULL, &parent);
     			if(s.IsFail()){
     				string message("Fetch parent IniEnv error, line ");
     				throw std::invalid_argument(message + GetNumberText(line_number));
     			}
 
     			string env_child=StringHelper::Trim(env_info[0]);
-    			s=GetOrAppend(env_child, &parent, child);
+    			s=GetOrAppend(env_child, parent, &child);
     			if(s.IsFail()){
 					string message("Fetch child IniEnv error, line ");
 					throw std::invalid_argument(message + GetNumberText(line_number));
 				}
 			}else{//child 一级
 				string env_child=StringHelper::Trim(env_info[0]);
-				Status s=GetOrAppend(env_child, NULL, child);
+				Status s=GetOrAppend(env_child, NULL, &child);
 				if(s.IsFail()){
 					string message("Fetch single child IniEnv error, line ");
 					throw std::invalid_argument(message + GetNumberText(line_number));
 				}
 			}
-
-
-
-
+    		current=child;
     		break;
     	}
+    	default:
+    	{
+    		string line(begin_char);
+    		//Debug::out(line);
 
+    		if(StringHelper::Trim(line)!="" && line.find('=')==string::npos){
+    			string message("Do not find sign equal '=', line ");
+				throw std::invalid_argument(message + GetNumberText(line_number));
+    		}
+
+    		string name = StringHelper::Trim(line.substr(0, line.find(kAssign)));
+    		string value = StringHelper::Trim(line.substr(line.find(kAssign) + 1));
+    		Status s=current->Set(name, value);
+    		if(s.IsFail()){
+				string message("Fail to set value");
+				throw std::invalid_argument(message +" message: "+s.message()+", line: "+ GetNumberText(line_number));
+			}
+    	    break;
+    	}
+    	}//switch
     }
-
-
-
 }
 
-Status IniHelper::Get(string env, IniEnv** value){
+/**
+ * 获取ini配置值
+ */
+Status IniEnv::Get(string key, string& value){
 
-    return Status::GetOK();
+	 return Status::GetOK();
 }
 
-Status IniHelper::GetOrAppend(string env, IniEnv* parent, IniEnv** value){
+/**
+ * 设置解析配置值
+ *
+ * TODO 需要处理:
+ *   解析key的层级结构，放在对的环境下；
+ *   正确解析值中的类型，字符串银行、整形浮点、环境常量等
+ *
+ * webrun.route.Action.Base='Route'NAME_SEP'Action'NAME_SEP'Base'
+ */
+Status IniEnv::Set(string key, string value){
 
-    return Status::GetOK();
+	 return Status::GetOK();
 }
 
 /**

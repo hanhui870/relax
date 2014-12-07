@@ -28,6 +28,7 @@ class NodeValue;
 class IniHelper {
 public:
 	const char* kEnvSeparator=":";
+	const char* kAssign = "=";
 
     ~IniHelper() {
     }
@@ -43,46 +44,63 @@ public:
      Status Get(string env, IniEnv** value);
 
      /**
+	  * 获取一个全局环境的值
+	  */
+	  Status GetGlobalIni(IniEnv** global);
+
+     /**
 	  * 获取一个环境的值
 	  */
 	  Status GetOrAppend(string env, IniEnv* parent, IniEnv** value);
 
 private:
+	 const char* const kGlobalIni="__global__";
      IniHelper(string& filename);
+     IniHelper(const IniHelper&);
+     IniHelper operator=(const IniHelper&);
 
     /**
      * environment => IniEnv
      *
      * 不在命名空间下的是global环境，全局可用。其他通过继承关系解析。
      */
-    map<string, IniEnv> container_;
+    map<string, IniEnv*> container_;
 };
 
 class IniEnv {
 public:
-    IniEnv() : parent_(NULL) {
-
-    }
-
-    ~IniEnv() {
-
-    }
-
     /**
      * 获取一个键的值
      */
-     Status Get(string key, NodeValue& value);
+     Status Get(string key, string& value);
 
     /**
      * 设置一个键的值
+     *
      */
-     Status Set(string key, NodeValue value);
+     Status Set(string key, string value);
 
-     Status set_parent (IniEnv* parent);
-     Status parent (IniEnv* parent);
+     Status set_parent (IniEnv* parent){
+    	 parent_=parent;
+    	 return Status::GetOK();
+     }
+     Status parent (IniEnv** parent){
+    	 *parent=parent_;
+    	 return Status::GetOK();
+     }
+
+protected:
+     IniEnv() : parent_(NULL) {
+	 }
+     explicit IniEnv(IniEnv* parent) : parent_(parent) {
+     }
+
+	 ~IniEnv() {
+	 }
 
 private:
      IniEnv* parent_;
+     friend class IniHelper;
 
      /**
       * key => value
