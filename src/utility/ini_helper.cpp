@@ -195,7 +195,7 @@ public:
 
 protected:
     NodeValue() :
-    	value_(NULL), type_(NODE_OHTER) {
+    	type_(NODE_OHTER) {
 	}
 
 	~NodeValue() {
@@ -211,20 +211,23 @@ private:
 
     //类型有构造、析构等函数不能作为联合成员
     union Value {
-        string value;
-        map<string, NodeValue*> children;
+        string* value;
+        map<string, NodeValue*>* children;
     };
 
-    Value* value_;
+    Value value_;
 };
 
+/**
+ * TODO 值解析，宏观变量、字符串等处理
+ */
 Status NodeValue::SetValue(string value){
     if(type_==NODE_BRANCH){
         return Status::GetFail().set_message("Branch node.");
     }
 
     type_=NODE_LEAF;
-    value_->value=value;
+    value_.value=new string(value);
 
     return Status::GetOK();
 }
@@ -235,11 +238,11 @@ Status NodeValue::GetChildOrAppend(string key, NodeValue** child){
     }
 
     type_=NODE_BRANCH;
-    if(value_->children.count(key)){
-        *child=value_->children.at(key);
+    if(value_.children->count(key)){
+        *child=value_.children->at(key);
     }else{
     	*child=new NodeValue();
-        value_->children.insert(std::make_pair(key, *child));
+        value_.children->insert(std::make_pair(key, *child));
     }
 
     return Status::GetOK();
@@ -251,8 +254,8 @@ Status NodeValue::GetChild(string key, NodeValue** child){
     }
 
     type_=NODE_BRANCH;
-    if(value_->children.count(key)){
-        *child=value_->children.at(key);
+    if(value_.children->count(key)){
+        *child=value_.children->at(key);
         return Status::GetOK();
     }
 
@@ -288,7 +291,7 @@ Status IniEnv::Get(string key, string& value){
 			if(current->type_!=NodeValue::NODE_LEAF){
 				return Status::GetFail().set_message(string("Value is not is leaf with key ")+key);
 			}else{
-				value=*(current->value_);
+				value=*(current->value_.value);
 			}
 		}
 	}
@@ -305,9 +308,6 @@ Status IniEnv::Get(string key, string& value){
  * webrun.route.Action.Base='Route'NAME_SEP'Action'NAME_SEP'Base'
  */
 Status IniEnv::Set(string key, string value){
-	Debug::out(key);
-	Debug::out(value);
-
 	vector<string> keyArray=StringHelper::Explode(key, kKeySeparator);
 	if(keyArray.size()<1){
 		Status::GetFail().set_message("Empty key.");
