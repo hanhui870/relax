@@ -56,6 +56,8 @@ public:
 private:
 	 const char* const kGlobalIni="__global__";
      IniHelper(string& filename);
+
+     //禁用拷贝、赋值
      IniHelper(const IniHelper&);
      IniHelper operator=(const IniHelper&);
 
@@ -69,6 +71,9 @@ private:
 
 class IniEnv {
 public:
+	const char* kKeySeparator=":";
+	const char* kAssign = "=";
+
     /**
      * 获取一个键的值
      */
@@ -89,6 +94,11 @@ public:
     	 return Status::GetOK();
      }
 
+     /**
+      * 导出为字符串
+      */
+     string ToString();
+
 protected:
      IniEnv() : parent_(NULL) {
 	 }
@@ -102,8 +112,14 @@ private:
      IniEnv* parent_;
      friend class IniHelper;
 
+     //禁用拷贝、赋值
+     IniEnv(const IniEnv&);
+     IniEnv operator=(const IniEnv&);
+
      /**
       * key => value
+      *
+      * 存放的是顶级值
       */
      map<string, NodeValue*> container_;
 };

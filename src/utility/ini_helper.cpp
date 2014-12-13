@@ -86,11 +86,13 @@ IniHelper::IniHelper(string& filename){
     while(ifile.getline(buffer, kLineBufferSize)){
     	line_number++;
     	char* begin_char=buffer;
-    	while(std::isspace(*begin_char) && *begin_char!='\n') begin_char=begin_char+1;
+    	while(std::isspace(*begin_char)) begin_char=begin_char+1;
 
     	switch(*begin_char){
     	//忽略注释行
     	case ';':
+    	//忽略空行，因为是getline的，是没有\n的
+    	case '\0':
     		continue;
     		break;
 
@@ -162,23 +164,177 @@ IniHelper::IniHelper(string& filename){
 }
 
 /**
+ * Ini值类型
+ *
+ * 可为树枝，上面可以有几个枝节关联几个页，但不能和页混合；
+ * 可为树叶，关联一个具体值。
+ */
+class NodeValue {
+public:
+    /**
+     * 获取或添加一个子节点
+     */
+    Status GetChildOrAppend(string key, NodeValue** child);
+
+    /**
+    * 获取一个子节点
+    */
+   Status GetChild(string key, NodeValue** child);
+
+    /**
+     * 设置节点字符串值
+     */
+    Status SetValue(string value);
+
+
+    enum ValueType {
+        NODE_LEAF=0,
+        NODE_BRANCH=1,
+        NODE_OHTER,//未定
+    };
+
+protected:
+    NodeValue() :
+    	value_(NULL), type_(NODE_OHTER) {
+	}
+
+	~NodeValue() {
+	}
+
+private:
+	friend class IniEnv;
+    ValueType type_;
+
+    //禁用拷贝、赋值
+    NodeValue(const NodeValue&);
+    NodeValue operator=(const NodeValue&);
+
+    //类型有构造、析构等函数不能作为联合成员
+    union Value {
+        string value;
+        map<string, NodeValue*> children;
+    };
+
+    Value* value_;
+};
+
+Status NodeValue::SetValue(string value){
+    if(type_==NODE_BRANCH){
+        return Status::GetFail().set_message("Branch node.");
+    }
+
+    type_=NODE_LEAF;
+    value_->value=value;
+
+    return Status::GetOK();
+}
+
+Status NodeValue::GetChildOrAppend(string key, NodeValue** child){
+    if(type_==NODE_LEAF){
+        return Status::GetFail().set_message("Leaf node.");
+    }
+
+    type_=NODE_BRANCH;
+    if(value_->children.count(key)){
+        *child=value_->children.at(key);
+    }else{
+    	*child=new NodeValue();
+        value_->children.insert(std::make_pair(key, *child));
+    }
+
+    return Status::GetOK();
+}
+
+Status NodeValue::GetChild(string key, NodeValue** child){
+    if(type_==NODE_LEAF){
+        return Status::GetFail().set_message("Leaf node.");
+    }
+
+    type_=NODE_BRANCH;
+    if(value_->children.count(key)){
+        *child=value_->children.at(key);
+        return Status::GetOK();
+    }
+
+    return Status::GetFail().set_message("Not exist.");
+}
+
+/**
  * 获取ini配置值
  */
 Status IniEnv::Get(string key, string& value){
+	vector<string> keyArray=StringHelper::Explode(key, kKeySeparator);
+	if(keyArray.size()<1){
+		Status::GetFail().set_message("Empty key.");
+	}
 
+	NodeValue *current=NULL, *parent=NULL;
+	Status s;
+	for(std::size_t iter=0; iter<keyArray.size(); ++iter){
+		if(iter==0){
+			if(container_.count(keyArray[iter])){
+				current=container_.at(keyArray[iter]);
+			}else{
+				return Status::GetFail().set_message(string("Faild to fetch value begin with ")+keyArray[iter]);
+			}
+		}else{
+			parent=current;
+			s=current->GetChild(keyArray[iter], &current);
+			if(s.IsFail()){
+				return Status::GetFail().set_message(string("Faild to fetch child ")+keyArray[iter]);
+			}
+		}
+		if(iter==keyArray.size()-1){
+			if(current->type_!=NodeValue::NODE_LEAF){
+				return Status::GetFail().set_message(string("Value is not is leaf with key ")+key);
+			}else{
+				value=*(current->value_);
+			}
+		}
+	}
 	 return Status::GetOK();
 }
 
 /**
  * 设置解析配置值
  *
- * TODO 需要处理:
+ * 需要处理:
  *   解析key的层级结构，放在对的环境下；
  *   正确解析值中的类型，字符串银行、整形浮点、环境常量等
  *
  * webrun.route.Action.Base='Route'NAME_SEP'Action'NAME_SEP'Base'
  */
 Status IniEnv::Set(string key, string value){
+	Debug::out(key);
+	Debug::out(value);
+
+	vector<string> keyArray=StringHelper::Explode(key, kKeySeparator);
+	if(keyArray.size()<1){
+		Status::GetFail().set_message("Empty key.");
+	}
+
+	NodeValue *current=NULL, *parent=NULL;
+	Status s;
+	for(std::size_t iter=0; iter<keyArray.size(); ++iter){
+		if(iter==0){
+			if(container_.count(keyArray[iter])){
+				current=container_.at(keyArray[iter]);
+			}else{
+				current=new NodeValue();
+				container_.insert(std::make_pair(key, current));
+			}
+		}else{
+			parent=current;
+			s=current->GetChildOrAppend(keyArray[iter], &current);
+			if(s.IsFail()){
+				return Status::GetFail().set_message("Faild to fetch or append child.");
+			}
+		}
+		if(iter==keyArray.size()-1){
+			//最后一个，赋值
+			current->SetValue(value);
+		}
+	}
 
 	 return Status::GetOK();
 }
@@ -193,87 +349,7 @@ static string GetNumberText(int num){
 	return text;
 }
 
-class NodeValue {
-public:
-    NodeValue() :
-            type_(NODE_OHTER) {
-    }
 
-    ~NodeValue() {
-    }
-
-    /**
-     * 获取或添加一个子节点
-     */
-    Status GetChildOrAppend(string key, NodeValue& child);
-
-    /**
-    * 获取一个子节点
-    */
-   Status GetChild(string key, NodeValue& child);
-
-    /**
-     * 设置节点字符串值
-     */
-    Status SetValue(string value);
-
-
-    enum ValueType {
-        NODE_LEAF=0,
-        NODE_BRANCH=1,
-        NODE_OHTER,//未定
-    };
-private:
-    ValueType type_;
-
-    //类型有构造、析构等函数不能作为联合成员
-    union Value {
-        string* value;
-        map<string, NodeValue>* children;
-    };
-
-    Value value_;
-};
-
-Status NodeValue::SetValue(string value){
-    if(type_==NODE_BRANCH){
-        return Status::GetFail().set_message("Branch node.");
-    }
-
-    type_=NODE_LEAF;
-    value_.value=new string(value);
-
-    return Status::GetOK();
-}
-
-Status NodeValue::GetChildOrAppend(string key, NodeValue& child){
-    if(type_==NODE_LEAF){
-        return Status::GetFail().set_message("Leaf node.");
-    }
-
-    type_=NODE_BRANCH;
-    if(value_.children->count(key)){
-        child=value_.children->at(key);
-    }else{
-        value_.children->insert(std::make_pair(key, NodeValue()));
-    }
-
-    return Status::GetOK();
-}
-
-Status NodeValue::GetChild(string key, NodeValue& child){
-    if(type_==NODE_LEAF){
-        return Status::GetFail().set_message("Leaf node.");
-    }
-
-    type_=NODE_BRANCH;
-    if(value_.children->count(key)){
-        child=value_.children->at(key);
-        return Status::GetOK();
-    }
-
-    return Status::GetFail().set_message("Not exist.");
-}
 
 } //relax
 } //utility
