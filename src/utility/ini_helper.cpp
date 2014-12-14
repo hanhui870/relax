@@ -29,6 +29,12 @@ Status IniHelper::Factory(string filename, IniHelper** instance){
     return Status::GetOK();
 }
 
+IniHelper::~IniHelper(){
+	for(auto iter : container_){
+		delete iter.second;
+	}
+}
+
 Status IniHelper::GetGlobalIni(IniEnv** global)
 {
 	*global=NULL;
@@ -171,6 +177,8 @@ IniHelper::IniHelper(string& filename){
  */
 class NodeValue {
 public:
+	const char* kKeySeparator=".";
+
     /**
      * 获取或添加一个子节点
      */
@@ -186,20 +194,23 @@ public:
      */
     Status SetValue(string value);
 
+    /**
+     * 递归获取当前node所有值
+     */
+    Status ToString(string& key, map<string, string>& value);
 
     enum ValueType {
         NODE_LEAF=0,
         NODE_BRANCH=1,
-        NODE_OHTER,//未定
+        NODE_OTHER,//未定
     };
 
 protected:
     NodeValue() :
-    	type_(NODE_OHTER) {
+    	type_(NODE_OTHER){
 	}
 
-	~NodeValue() {
-	}
+	~NodeValue();
 
 private:
 	friend class IniEnv;
@@ -211,6 +222,9 @@ private:
 
     //类型有构造、析构等函数不能作为联合成员
     union Value {
+    	//Union也需要显示初始化
+    	Value() : value(NULL){}
+
         string* value;
         map<string, NodeValue*>* children;
     };
@@ -218,26 +232,46 @@ private:
     Value value_;
 };
 
+NodeValue::~NodeValue(){
+	if(type_ == NODE_LEAF){
+		delete value_.value;
+	}else if(type_ == NODE_BRANCH){
+		for(auto iter : *value_.children){
+			delete iter.second;
+		}
+	}
+}
+
 /**
  * TODO 值解析，宏观变量、字符串等处理
  */
 Status NodeValue::SetValue(string value){
     if(type_==NODE_BRANCH){
         return Status::GetFail().set_message("Branch node.");
+    }else  if(type_==NODE_OTHER){
+    	type_=NODE_LEAF;
     }
 
-    type_=NODE_LEAF;
+    if(value_.value!=NULL){
+    	delete  value_.value;
+    }
     value_.value=new string(value);
 
     return Status::GetOK();
 }
 
 Status NodeValue::GetChildOrAppend(string key, NodeValue** child){
+	*child=NULL;
     if(type_==NODE_LEAF){
         return Status::GetFail().set_message("Leaf node.");
+    }else  if(type_==NODE_OTHER){
+    	type_=NODE_BRANCH;
     }
 
-    type_=NODE_BRANCH;
+    if(value_.children==NULL){
+    	value_.children =new map<string, NodeValue*>();
+    }
+
     if(value_.children->count(key)){
         *child=value_.children->at(key);
     }else{
@@ -260,6 +294,28 @@ Status NodeValue::GetChild(string key, NodeValue** child){
     }
 
     return Status::GetFail().set_message("Not exist.");
+}
+
+Status NodeValue::ToString(string& key, map<string, string>& value){
+	if(type_==NODE_LEAF){
+		value.insert(std::make_pair(key, *value_.value));
+	}else if(type_==NODE_BRANCH){
+		for(auto iter : *value_.children){
+			string tmp(kKeySeparator);
+			key.append(tmp+iter.first);
+			iter.second->ToString(key, value);
+		}
+	}else{
+		Status::GetFail().set_message("Found NODE_OTHER NodeValue.");
+	}
+
+	return Status::GetOK();
+}
+
+IniEnv::~IniEnv(){
+	for(auto iter : container_){
+		delete iter.second;
+	}
 }
 
 /**
@@ -308,6 +364,9 @@ Status IniEnv::Get(string key, string& value){
  * webrun.route.Action.Base='Route'NAME_SEP'Action'NAME_SEP'Base'
  */
 Status IniEnv::Set(string key, string value){
+	//Debug::out(key);
+	//Debug::out(value);
+
 	vector<string> keyArray=StringHelper::Explode(key, kKeySeparator);
 	if(keyArray.size()<1){
 		Status::GetFail().set_message("Empty key.");
@@ -316,27 +375,58 @@ Status IniEnv::Set(string key, string value){
 	NodeValue *current=NULL, *parent=NULL;
 	Status s;
 	for(std::size_t iter=0; iter<keyArray.size(); ++iter){
+		string keyTmp=StringHelper::Trim(keyArray[iter]);
+		if(keyTmp.size()<=0) {
+			throw std::invalid_argument(string("IniEnv::Set an empty key found:")+key);
+		}
 		if(iter==0){
-			if(container_.count(keyArray[iter])){
-				current=container_.at(keyArray[iter]);
+			if(container_.count(keyTmp)){
+				current=container_.at(keyTmp);
 			}else{
 				current=new NodeValue();
 				container_.insert(std::make_pair(key, current));
 			}
 		}else{
 			parent=current;
-			s=current->GetChildOrAppend(keyArray[iter], &current);
+			if(!parent){
+				throw std::invalid_argument(string("IniEnv::Set an empty NodeValue *current found:")+key);
+			}
+			s=parent->GetChildOrAppend(keyTmp, &current);
 			if(s.IsFail()){
 				return Status::GetFail().set_message("Faild to fetch or append child.");
 			}
 		}
 		if(iter==keyArray.size()-1){
+			if(!current){
+				throw std::invalid_argument(string("IniEnv::Set an empty NodeValue *current found to SetValue:")+key);
+			}
 			//最后一个，赋值
 			current->SetValue(value);
 		}
 	}
 
 	 return Status::GetOK();
+}
+
+string IniEnv::ToString(){
+	string result;
+
+	if(parent_){
+		result.append(parent_->ToString());
+	}
+
+	map<string, string> value;
+	for(auto iter : container_){
+		string key=iter.first;
+		iter.second->ToString(key, value);
+	}
+
+	for(auto iter : value){
+		string key=iter.first;
+		result.append(key+" "+kAssign+" "+iter.second+"\n");
+	}
+
+	return result;
 }
 
 /**

@@ -25,13 +25,21 @@ using std::string;
 class IniEnv;
 class NodeValue;
 
+/**
+ * Ini文件解析器
+ *
+ * Usage:
+ * IniHelper *ini;
+ * Status s=IniHelper::Factory("test.ini", &ini);
+ *
+ * delete ini;
+ */
 class IniHelper {
 public:
 	const char* kEnvSeparator=":";
 	const char* kAssign = "=";
 
-    ~IniHelper() {
-    }
+    ~IniHelper();
 
     /**
      * 获取一个ini实例
@@ -71,7 +79,7 @@ private:
 
 class IniEnv {
 public:
-	const char* kKeySeparator=":";
+	const char* kKeySeparator=".";
 	const char* kAssign = "=";
 
     /**
@@ -105,8 +113,7 @@ protected:
      explicit IniEnv(IniEnv* parent) : parent_(parent) {
      }
 
-	 ~IniEnv() {
-	 }
+	 ~IniEnv();
 
 private:
      IniEnv* parent_;
