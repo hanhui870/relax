@@ -32,6 +32,7 @@ class NodeValue;
  * IniHelper *ini;
  * Status s=IniHelper::Factory("test.ini", &ini);
  *
+ * //负责清空所有分配内存
  * delete ini;
  */
 class IniHelper {

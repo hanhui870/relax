@@ -296,6 +296,9 @@ Status NodeValue::GetChild(string key, NodeValue** child){
     return Status::GetFail().set_message("Not exist.");
 }
 
+/**
+ * TODO 这里有个递归的bug
+ */
 Status NodeValue::ToString(string& key, map<string, string>& value){
 	if(type_==NODE_LEAF){
 		value.insert(std::make_pair(key, *value_.value));
@@ -330,17 +333,21 @@ Status IniEnv::Get(string key, string& value){
 	NodeValue *current=NULL, *parent=NULL;
 	Status s;
 	for(std::size_t iter=0; iter<keyArray.size(); ++iter){
+		string keyTmp=StringHelper::Trim(keyArray[iter]);
 		if(iter==0){
-			if(container_.count(keyArray[iter])){
-				current=container_.at(keyArray[iter]);
+			if(container_.count(keyTmp)){
+				current=container_.at(keyTmp);
 			}else{
-				return Status::GetFail().set_message(string("Faild to fetch value begin with ")+keyArray[iter]);
+				if(parent_){
+					return parent_->Get(key, value);
+				}
+				return Status::GetFail().set_message(string("Faild to fetch value begin with ")+keyTmp);
 			}
 		}else{
 			parent=current;
-			s=current->GetChild(keyArray[iter], &current);
+			s=current->GetChild(keyTmp, &current);
 			if(s.IsFail()){
-				return Status::GetFail().set_message(string("Faild to fetch child ")+keyArray[iter]);
+				return Status::GetFail().set_message(string("Faild to fetch child ")+keyTmp);
 			}
 		}
 		if(iter==keyArray.size()-1){
@@ -351,7 +358,7 @@ Status IniEnv::Get(string key, string& value){
 			}
 		}
 	}
-	 return Status::GetOK();
+	return Status::GetOK();
 }
 
 /**
@@ -364,9 +371,6 @@ Status IniEnv::Get(string key, string& value){
  * webrun.route.Action.Base='Route'NAME_SEP'Action'NAME_SEP'Base'
  */
 Status IniEnv::Set(string key, string value){
-	//Debug::out(key);
-	//Debug::out(value);
-
 	vector<string> keyArray=StringHelper::Explode(key, kKeySeparator);
 	if(keyArray.size()<1){
 		Status::GetFail().set_message("Empty key.");
@@ -384,7 +388,7 @@ Status IniEnv::Set(string key, string value){
 				current=container_.at(keyTmp);
 			}else{
 				current=new NodeValue();
-				container_.insert(std::make_pair(key, current));
+				container_.insert(std::make_pair(keyTmp, current));
 			}
 		}else{
 			parent=current;
