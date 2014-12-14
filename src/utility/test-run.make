@@ -1,6 +1,6 @@
 CPP=g++
 
-CXXFLAGS=-g -std=c++11 -DGTEST_LANG_CXX11=1 -U__STRICT_ANSI__ -I../../include
+CXXFLAGS=-O3 -std=c++11 -DGTEST_LANG_CXX11=1 -U__STRICT_ANSI__ -I../../include
 
 LIBS=-L/usr/local/lib  -lboost_timer.dll -lboost_system.dll
 OBJECTS=number_helper.o ini_helper.o time_helper.o env_helper.o string_helper.o ../relax/relax.o test-run.o
