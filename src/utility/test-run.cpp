@@ -51,7 +51,7 @@ int main(int argc, char **argv){
 			cout<<"Fetch app.domain: "<<value<<endl;
 		}
 
-		cout<<"IniEnv::ToString() production: "<<endl<<env->ToString()<<endl;
+		cout<<"IniEnv::ToString() development: "<<endl<<env->ToString()<<endl;
 	}
 	return 0;
 }

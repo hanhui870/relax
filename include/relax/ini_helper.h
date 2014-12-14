@@ -107,6 +107,7 @@ public:
       * 导出为字符串
       */
      string ToString();
+     Status ToStringMap(map<string, string>& value);
 
 protected:
      IniEnv() : parent_(NULL) {

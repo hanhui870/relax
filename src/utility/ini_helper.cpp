@@ -297,16 +297,18 @@ Status NodeValue::GetChild(string key, NodeValue** child){
 }
 
 /**
- * TODO 这里有个递归的bug
+ * 将NodeValue递归转储为字符串
  */
 Status NodeValue::ToString(string& key, map<string, string>& value){
 	if(type_==NODE_LEAF){
-		value.insert(std::make_pair(key, *value_.value));
+		if(value.count(key)==0){
+			value.insert(std::make_pair(key, *value_.value));
+		}
 	}else if(type_==NODE_BRANCH){
 		for(auto iter : *value_.children){
-			string tmp(kKeySeparator);
-			key.append(tmp+iter.first);
-			iter.second->ToString(key, value);
+			//传递临时字符串，解决递归bug
+			string tmp(key+kKeySeparator+iter.first);
+			iter.second->ToString(tmp, value);
 		}
 	}else{
 		Status::GetFail().set_message("Found NODE_OTHER NodeValue.");
@@ -415,15 +417,8 @@ Status IniEnv::Set(string key, string value){
 string IniEnv::ToString(){
 	string result;
 
-	if(parent_){
-		result.append(parent_->ToString());
-	}
-
 	map<string, string> value;
-	for(auto iter : container_){
-		string key=iter.first;
-		iter.second->ToString(key, value);
-	}
+	ToStringMap(value);
 
 	for(auto iter : value){
 		string key=iter.first;
@@ -431,6 +426,20 @@ string IniEnv::ToString(){
 	}
 
 	return result;
+}
+
+Status IniEnv::ToStringMap(map<string, string>& value){
+	for(auto iter : container_){
+		string key=iter.first;
+		iter.second->ToString(key, value);
+	}
+
+	//parent后解析 不覆盖
+	if(parent_){
+		parent_->ToStringMap(value);
+	}
+
+	return Status::GetOK();
 }
 
 /**
