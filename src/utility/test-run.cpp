@@ -57,6 +57,7 @@ int main(int argc, char **argv){
 	 * 公司I3电脑
 	 * 		4.181801s wall, 4.165000s user + 0.000000s system = 4.165000s CPU (99.6%)
 	 * 		3.597247s wall, 3.603000s user + 0.000000s system = 3.603000s CPU (100.2%) //s=iniptr->Get("development", &env);在循环外
+	 *		2.392870s wall, 2.386000s user + 0.000000s system = 2.386000s CPU (99.7%) //键获取减少StringHelper::Trim操作。
 	 * 		PHP: 1418619236.2832 1418619239.2769 3s左右，性能也不差啊。
 	 */
 	s=iniptr->Get("development", &env);

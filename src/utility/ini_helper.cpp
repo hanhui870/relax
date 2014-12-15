@@ -325,6 +325,8 @@ IniEnv::~IniEnv(){
 
 /**
  * 获取ini配置值
+ *
+ * key没有trim操作，客户端自己保证正确
  */
 Status IniEnv::Get(string key, string& value){
 	vector<string> keyArray=StringHelper::Explode(key, kKeySeparator);
@@ -335,7 +337,7 @@ Status IniEnv::Get(string key, string& value){
 	NodeValue *current=NULL, *parent=NULL;
 	Status s;
 	for(std::size_t iter=0; iter<keyArray.size(); ++iter){
-		string keyTmp=StringHelper::Trim(keyArray[iter]);
+		string keyTmp=keyArray[iter];
 		if(iter==0){
 			if(container_.count(keyTmp)){
 				current=container_.at(keyTmp);
@@ -368,7 +370,8 @@ Status IniEnv::Get(string key, string& value){
  *
  * 需要处理:
  *   解析key的层级结构，放在对的环境下；
- *   正确解析值中的类型，字符串银行、整形浮点、环境常量等
+ *   正确解析值中的类型，字符串银行、整形浮点、环境常量等；
+ *   trim掉键中不必要的空格；
  *
  * webrun.route.Action.Base='Route'NAME_SEP'Action'NAME_SEP'Base'
  */
