@@ -41,8 +41,20 @@ int main(int argc, char **argv){
 		cout<<"IniEnv::ToString() production: "<<endl<<env->ToString()<<endl;
 	}
 
-	//压测 10万下，可是I7，睿频到3GHZ  10.334496s wall, 10.343000s user + 0.000000s system = 10.343000s CPU (100.1%)
-	for( int iter=0; iter<=100000; iter++){
+	/**
+	 * 压测数据
+	 *
+	 * 压测 10万下，包含env->ToString();
+	 * 家里I7，睿频到3GHZ
+	 * 		10.334496s wall, 10.343000s user + 0.000000s system = 10.343000s CPU (100.1%)
+	 * 公司I3电脑
+	 * 		21.433274s wall, 21.372000s user + 0.015000s system = 21.387000s CPU (99.8%)
+	 *
+	 * 压测 100万下，删除env->ToString();
+	 * 公司I3电脑
+	 * 		4.181801s wall, 4.165000s user + 0.000000s system = 4.165000s CPU (99.6%)
+	 */
+	for( int iter=0; iter<=1000000; iter++){
 		s=iniptr->Get("development", &env);
 		if(s.IsFail()){
 			//cout<<"Failed to fetch env development: "<<s.message()<<endl;
@@ -54,7 +66,7 @@ int main(int argc, char **argv){
 			}else{
 				//cout<<"Fetch app.domain: "<<value<<endl;
 			}
-			env->ToString();
+			//env->ToString();
 			//cout<<"IniEnv::ToString() development: "<<endl<<env->ToString()<<endl;
 		}
 	}
