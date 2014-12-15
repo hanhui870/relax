@@ -243,7 +243,8 @@ NodeValue::~NodeValue(){
 }
 
 /**
- * TODO 值解析，宏观变量、字符串等处理
+ * 值设置
+ *
  */
 Status NodeValue::SetValue(string value){
     if(type_==NODE_BRANCH){
