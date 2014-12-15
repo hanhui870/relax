@@ -17,7 +17,10 @@ int main(int argc, char **argv){
 		cout<<"Failed to factory IniHelper instance: "<<s.message()<<endl;
 	}
 
-	s=IniHelper::Factory("ini-test/app.ini", &ini);
+	{
+		relax::timer t2;
+		s=IniHelper::Factory("ini-test/app.ini", &ini);
+	}
 	if(s.IsFail()){
 		cout<<"Failed factory IniHelper instance: "<<s.message()<<endl;
 	}else{
@@ -53,9 +56,11 @@ int main(int argc, char **argv){
 	 * 压测 100万下，删除env->ToString();
 	 * 公司I3电脑
 	 * 		4.181801s wall, 4.165000s user + 0.000000s system = 4.165000s CPU (99.6%)
+	 * 		3.597247s wall, 3.603000s user + 0.000000s system = 3.603000s CPU (100.2%) //s=iniptr->Get("development", &env);在循环外
+	 * 		PHP: 1418619236.2832 1418619239.2769 3s左右，性能也不差啊。
 	 */
+	s=iniptr->Get("development", &env);
 	for( int iter=0; iter<=1000000; iter++){
-		s=iniptr->Get("development", &env);
 		if(s.IsFail()){
 			//cout<<"Failed to fetch env development: "<<s.message()<<endl;
 		}else{
