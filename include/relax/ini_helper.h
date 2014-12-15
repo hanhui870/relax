@@ -87,6 +87,8 @@ public:
      * 获取一个键的值
      */
      Status Get(string key, string& value);
+     Status Get(string key, int& value);
+     Status Get(string key, double& value);
 
     /**
      * 设置一个键的值
