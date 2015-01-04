@@ -13,6 +13,7 @@
 #include <stdexcept>
 #include <cctype>
 #include <cstring>
+#include <Poco/NumberParser.h>
 
 namespace relax {
 namespace utility {
@@ -364,6 +365,30 @@ Status IniEnv::Get(string key, string& value){
 		}
 	}
 	return Status::GetOK();
+}
+
+Status IniEnv::Get(string key, int& value){
+	string tmp;
+	Status s=Get(key, tmp);
+	if(s.IsFail()) return s;
+
+	if(Poco::NumberParser::tryParse(tmp, value)){
+		return Status::GetOK();
+	}else{
+		return Status::GetFail().set_message("Invalid number string.");
+	}
+}
+
+Status IniEnv::Get(string key, double& value){
+	string tmp;
+	Status s=Get(key, tmp);
+	if(s.IsFail()) return s;
+
+	if(Poco::NumberParser::tryParseFloat(tmp, value)){
+		return Status::GetOK();
+	}else{
+		return Status::GetFail().set_message("Invalid number string.");
+	}
 }
 
 /**

@@ -7,6 +7,7 @@
 
 using namespace std;
 using relax::utility::IniHelper;
+using relax::utility::IniEnv;
 using relax::Status;
 
 
@@ -32,8 +33,26 @@ TEST(ini_helper, common_actions)
     }
     std::unique_ptr<IniHelper> iniptr(ini);
 
+    IniEnv* env;
+    s=ini->Get("production", &env);
+    if(s.IsFail()){
+		cout<<"Failed fetch env: "<<s.message()<<endl;
+	}else{
+		string value;
+		s=env->Get("webrun.view.cachePath", value);
+		cout<<"Fetch webrun.view.cachePath: "<<value<<endl;
+		EXPECT_STREQ("APP_PATH'Data'SEP'View'SEP", value.c_str());
 
+		int valueInt;
+		s=env->Get("webrun.view.life", valueInt);
+		cout<<"Fetch webrun.view.life: "<<valueInt<<endl;
+		EXPECT_EQ(86400, valueInt);
 
+		double valueFloat;
+		s=env->Get("secure.csrf.float", valueFloat);
+		cout<<"Fetch secure.csrf.float: "<<valueFloat<<endl;
+		EXPECT_EQ(3.14159, valueFloat);
+	}
 
 
 
