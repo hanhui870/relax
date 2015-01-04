@@ -2,7 +2,7 @@ CPP=g++
 
 CXXFLAGS=-O3 -std=c++11 -DGTEST_LANG_CXX11=1 -U__STRICT_ANSI__ -I../../include
 
-LIBS=-L/usr/local/lib  -lboost_timer.dll -lboost_system.dll
+LIBS=-L/usr/local/lib  -lboost_timer -lboost_system
 OBJECTS=number_helper.o ini_helper.o time_helper.o env_helper.o string_helper.o ../relax/relax.o test-run.o
 BINARY=test-run.exe
 
