@@ -16,8 +16,17 @@ using std::string;
  * 	字符串处理
  */
 class StringParser{
+	const string kStringDelimiter="'\"";
+
 public:
-	Status parse(string input, string output);
+	StringParser(string str) : original(str){
+
+	}
+
+	Status get(string& output);
+
+private:
+	string original;
 };
 
 } //relax
