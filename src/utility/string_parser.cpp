@@ -26,7 +26,7 @@ Status StringParser::get(string& output){
 	iter1=start;
 	while(iter1 != end){
 		iter2=iter1;
-		while((sepnow=kStringDelimiter.find(*iter2)) == string::npos) ++iter2;
+		while((sepnow=kStringDelimiter.find(*iter2)) == string::npos && iter2!=end) ++iter2;
 		if(iter2 != iter1){
 			if('\0' == separator){
 				if( kStringDelimiter[sepnow]!= separator){
