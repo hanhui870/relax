@@ -5,6 +5,9 @@
 namespace relax {
 namespace utility {
 
+//必须在类体中声明，类体外定义，并且不能在头文件，不然可能多重定义
+const string StringParser::kStringDelimiter="'\"\\";
+
 /**
  * 解析字符串
  *
@@ -27,22 +30,27 @@ Status StringParser::get(string& output){
 	while(iter1 != end){
 		iter2=iter1;
 		while((sepnow=kStringDelimiter.find(*iter2)) == string::npos && iter2!=end) ++iter2;
-		if(iter2 != iter1){
+
+		return Status::GetOK();
+		if(sepnow != string::npos){
 			if('\0' == separator){
+				//设置当前分隔符
+				separator=kStringDelimiter[sepnow];
+
+			}else{
+				//当前分隔符一致
 				if( kStringDelimiter[sepnow]!= separator){
 					token=string(iter1, iter2);
 					Debug::out(token);
 					return Status::GetOK();
-				}else{
-					//字符串结束
 				}
-			}else{// !=\0
-
-
 			}
 		}else{
-			separator=*iter2;
+			if('\0' != separator){
+				return Status::GetFail().set_message(string("Invalid ini value: ")+original);
+			}
 		}
+
 		iter1=iter2;
 	}
 

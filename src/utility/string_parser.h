@@ -16,7 +16,7 @@ using std::string;
  * 	字符串处理
  */
 class StringParser{
-	const string kStringDelimiter="'\"";
+	const static string kStringDelimiter;
 
 public:
 	StringParser(string str) : original(str){
