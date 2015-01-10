@@ -16,8 +16,6 @@ using std::string;
  * 	字符串处理
  */
 class StringParser{
-	const static string kStringDelimiter;
-
 public:
 	StringParser(string str) : original(str){
 
@@ -26,7 +24,19 @@ public:
 	Status get(string& output);
 
 private:
+	//非字符内解析
+	Status ParseConst(string& key, string& value);
+
 	string original;
+
+	//所有分隔符
+	const static string kStringDelimiter;
+	//转义
+	const static char kSlashes;
+	//支持的转义序列
+	const static string kSlashesList;
+	//对应转义序列
+	const static string kSlashedList;
 };
 
 } //relax
