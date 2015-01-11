@@ -27,11 +27,42 @@ TEST(string_parser, common_actions)
     }
 
     {
+		StringParser p("PATH");
+		string out;
+		Status s=p.get(out);
+		EXPECT_EQ(true, s.IsOK());
+		if(s.IsOK()){
+			cout<<"Result for PATH: "<<out<<endl;
+		}else{
+			cout<<"Result faild: "<<s.message()<<endl;
+		}
+	 }
+
+    {
+		StringParser p("GOROOT\'/bin/go\'");
+		string out;
+		Status s=p.get(out);
+		EXPECT_EQ(true, s.IsOK());
+		if(s.IsOK()){
+			cout<<"Result for go: "<<out<<endl;
+		}else{
+			cout<<"Result faild: "<<s.message()<<endl;
+		}
+	 }
+
+    {
       	StringParser p("2");
   		string out;
   		Status s=p.get(out);
   		EXPECT_STREQ("2", out.c_str());
      }
+
+    {
+		StringParser p("tech\'test\'2");
+		string out;
+		Status s=p.get(out);
+		EXPECT_EQ(true, s.IsOK());
+	 }
 
     {
 		StringParser p("2.900006");

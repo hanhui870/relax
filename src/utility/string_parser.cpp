@@ -92,8 +92,14 @@ Status StringParser::get(string& output){
 				return Status::GetFail().set_message(string("Invalid ini value: ")+original);
 			}
 
-			output.append(string(iter1, iter2));
-			iter2++;
+			string tmp=StringHelper::Trim(string(iter1, iter2));
+			string value;
+			Status s=ParseConst(tmp, value);
+			if(s.IsFail()){
+				return s;
+			}
+			output.append(value);
+			//iter2++;//这里不用加1，前面已经加到end了。
 		}
 
 		iter1=iter2;
