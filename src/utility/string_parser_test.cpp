@@ -27,12 +27,12 @@ TEST(string_parser, common_actions)
     }
 
     {
-		StringParser p("PATH");
+		StringParser p("GOROOT");
 		string out;
 		Status s=p.get(out);
 		EXPECT_EQ(true, s.IsOK());
 		if(s.IsOK()){
-			cout<<"Result for PATH: "<<out<<endl;
+			cout<<"Result for GOROOT: "<<out<<endl;
 		}else{
 			cout<<"Result faild: "<<s.message()<<endl;
 		}

@@ -9,6 +9,7 @@
 #include <relax/ini_helper.h>
 #include <relax/number_helper.h>
 #include <relax/string_helper.h>
+#include "string_parser.h"
 #include <fstream>
 #include <stdexcept>
 #include <cctype>
@@ -257,7 +258,15 @@ Status NodeValue::SetValue(string value){
     if(value_.value!=NULL){
     	delete  value_.value;
     }
-    value_.value=new string(value);
+
+    //字符串解析
+    StringParser p(value);
+    string output;
+    Status s=p.get(output);
+    if(s.IsFail()){
+    	return s;
+    }
+    value_.value=new string(output);
 
     return Status::GetOK();
 }
@@ -436,7 +445,10 @@ Status IniEnv::Set(string key, string value){
 				throw std::invalid_argument(string("IniEnv::Set an empty NodeValue *current found to SetValue:")+key);
 			}
 			//最后一个，赋值
-			current->SetValue(value);
+			Status s=current->SetValue(value);
+			if(s.IsFail()){
+				return s;
+			}
 		}
 	}
 

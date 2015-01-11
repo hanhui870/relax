@@ -26,8 +26,11 @@ TEST(ini_helper, common_actions)
     }
 
     s=IniHelper::Factory("ini-test/app.ini", &ini);
+    EXPECT_EQ(true, s.IsOK());
     if(s.IsFail()){
         cout<<"Failed factory IniHelper instance: "<<s.message()<<endl;
+        //构建失败
+        return ;
     }else{
         cout<<"Factory IniHelper instance address: "<<ini<<endl;
     }
@@ -41,7 +44,7 @@ TEST(ini_helper, common_actions)
 		string value;
 		s=env->Get("webrun.view.cachePath", value);
 		cout<<"Fetch webrun.view.cachePath: "<<value<<endl;
-		EXPECT_STREQ("APP_PATH'Data'SEP'View'SEP", value.c_str());
+		EXPECT_STREQ("D:\\go\\Data\\View", value.c_str());
 
 		int valueInt;
 		s=env->Get("webrun.view.life", valueInt);
