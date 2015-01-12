@@ -6,7 +6,7 @@ using namespace std;
 
 TEST(time_helper, common_actions)
 {
-    using ::relax::utility::TimeHelper;
+    using ::relax::TimeHelper;
 
     cout<<"MicroTime:"<<TimeHelper::MicroTime()<<endl;
     cout<<"Second:"<<TimeHelper::Time()<<endl;

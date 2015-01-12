@@ -14,7 +14,6 @@
 #include <vector>
 
 namespace relax {
-namespace utility {
 
 using std::string;
 using std::vector;
@@ -60,6 +59,5 @@ string StringHelper::ConvertToString(T value){
 }
 
 } //relax
-} //utility
 
 #endif//RELAX_UTILITY_STRING_HELPER_H_

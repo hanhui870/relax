@@ -6,8 +6,8 @@
 #include <memory>
 
 using namespace std;
-using relax::utility::IniHelper;
-using relax::utility::IniEnv;
+using relax::IniHelper;
+using relax::IniEnv;
 using relax::Status;
 
 

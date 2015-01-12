@@ -4,12 +4,9 @@
 #include <relax/time_helper.h>
 
 namespace relax {
-namespace fetcher {
 
 using std::exception;
 using std::invalid_argument;
-using utility::StringHelper;
-using utility::TimeHelper;
 
 Status CookieManager::reset(){
 	std::lock_guard<std::mutex> lg(mutex_);
@@ -77,7 +74,6 @@ CookieValue& CookieValue::operator=(const CookieValue& rvalue){
 CookieString::CookieString(string str) :
 		CookieValue(){
 
-	using relax::utility::StringHelper;
 	auto result = StringHelper::Explode(StringHelper::Trim(str), kDelimiter);
 
 	//处理name
@@ -247,4 +243,3 @@ Status Cookie::Delete(string name) {
 
 
 } //relax
-} //fetcher

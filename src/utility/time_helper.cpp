@@ -6,7 +6,6 @@
 #include "datetime.h"
 
 namespace relax {
-namespace utility {
 
 using std::memset;
 const char* TimeHelper::kCookieFormat = "%a, %d-%b-%Y %T %Z";
@@ -93,4 +92,3 @@ Status TimeHelper::StampToCookieTime(second sec, string& result){
 }
 
 } //relax
-} //utility

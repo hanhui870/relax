@@ -4,13 +4,12 @@
 
 using namespace std;
 using relax::Status;
-using ::relax::fetcher::Curl;
+using ::relax::Curl;
 
 TEST(curl, fetch_baidu_com)
 {
     relax::timer t;
 
-    using ::relax::fetcher::Curl;
     Curl* curl=new Curl();
 
     //内容长度>0
@@ -54,7 +53,6 @@ TEST(curl, fetch_not_exists)
 {
     relax::timer t;
 
-    using ::relax::fetcher::Curl;
     Curl* curl=new Curl();
 
     //内容长度>0 比如电信存在域名不存在页面的，会出现返回内容

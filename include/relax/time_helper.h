@@ -13,7 +13,6 @@
 #include <relax/relax.h>
 
 namespace relax {
-namespace utility {
 
 using std::string;
 
@@ -56,6 +55,5 @@ public:
 };
 
 } //relax
-} //utility
 
 #endif//RELAX_UTILITY_TIME_HELPER_H_

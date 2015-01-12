@@ -10,7 +10,6 @@
 #include "fetcher.h"
 
 namespace relax{
-namespace fetcher{
 
 Fetcher::Fetcher() {
     _curl=new Curl();
@@ -18,5 +17,4 @@ Fetcher::Fetcher() {
 
 
 
-}//adn
-}//robot
+}//relax

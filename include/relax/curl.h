@@ -17,7 +17,6 @@
 #include <relax/relax.h>
 
 namespace relax {
-namespace fetcher {
 
 using ::std::string;
 
@@ -77,6 +76,5 @@ private:
 };
 
 } //huilib
-} //fetcher
 
 #endif//RELAX_FETCHER_CURL_H_

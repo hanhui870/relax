@@ -11,7 +11,6 @@
 #include <cassert>
 
 namespace relax {
-namespace utility {
 
 vector<string> StringHelper::Explode(string str, string delimiter) {
     string::size_type pos = 0;
@@ -94,4 +93,3 @@ void StringHelper::ToLower(string& str) {
 }
 
 } //relax
-} //utility

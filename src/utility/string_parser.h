@@ -5,7 +5,6 @@
 #define RELAX_UTILITY_STRING_PARSER_H_
 
 namespace relax {
-namespace utility {
 
 using std::string;
 
@@ -40,6 +39,5 @@ private:
 };
 
 } //relax
-} //utility
 
 #endif//RELAX_UTILITY_STRING_PARSER_H_

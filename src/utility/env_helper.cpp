@@ -9,7 +9,6 @@
 extern char ** environ;
 
 namespace relax {
-namespace utility {
 
 using std::map;
 
@@ -48,7 +47,7 @@ Variable* Variable::GetInstance() {
 Variable::Variable() {
     char** env;
 
-    using ::relax::utility::StringHelper;
+    using ::relax::StringHelper;
     for (env = environ; *env != 0; env++) {
         auto result=StringHelper::Explode(*env, "=");
         try{
@@ -116,4 +115,3 @@ Status EnvHelper::SetGlobal(string key, string value, OverWrite overwrite) {
 }
 
 } //relax
-} //utility

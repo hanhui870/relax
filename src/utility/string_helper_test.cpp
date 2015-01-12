@@ -8,7 +8,7 @@ TEST(string_helper, common_actions)
 {
     relax::timer t;
 
-    using ::relax::utility::StringHelper;
+    using ::relax::StringHelper;
     vector<string> result=StringHelper::Explode("Token=1840m59u5epb5j5znsrwfm6amcrdt4gkdnu52o4f; expires=Fri, 20-Sep-2019 14:06:12 GMT; path=/; HttpOnly; secure  ;;", ";");
 
     for(auto &elem : result)
