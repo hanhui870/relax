@@ -7,6 +7,7 @@
 #include <iostream>
 #include <exception>
 #include <assert.h>
+#include <unistd.h>
 
 using Poco::Mutex;
 using Poco::ThreadPool;
@@ -96,6 +97,14 @@ int main(int argc, char** argv) {
 	//runnable._event.set(); // go!!!
 	thread.join();
 
+	//forever loop
+	std::cout<<"thread pool forever loop: "<<std::endl;
+	while(pool.available()>0){
+		pool.start(ra);
+		//确保有新的线程可用，也可以使用条件信号
+		usleep(100);
+	}
+	pool.joinAll();
 
 	return 0;
 }
