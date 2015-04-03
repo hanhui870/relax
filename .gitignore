@@ -30,3 +30,4 @@
 *.log
 *.pyc
 *.core
+/Debug/
