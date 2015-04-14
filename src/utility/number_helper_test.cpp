@@ -8,7 +8,7 @@ using namespace std;
 
 TEST(number_helper, common_actions) {
     relax::timer t;
-    using relax::utility::NumberHelper;
+    using relax::NumberHelper;
 
     //测试string的标准长度
     string value;

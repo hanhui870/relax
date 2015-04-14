@@ -9,9 +9,7 @@
 #include <iostream>
 
 namespace relax {
-namespace log {
 
 
 
 } //relax
-} //log

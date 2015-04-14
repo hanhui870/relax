@@ -5,7 +5,7 @@ CPP=g++
 CXXFLAGS=-g -std=c++11 -DGTEST_LANG_CXX11=1 -U__STRICT_ANSI__ -I../../include
 
 LIBS=-L/usr/local/lib   -lgtest -lgtest_main -lboost_timer -lboost_system -lPocoFoundation
-OBJECTS=number_helper.o number_helper_test.o ini_helper.o ini_helper_test.o time_helper.o time_helper_test.o env_helper.o env_helper_test.o string_helper.o string_helper_test.o string_parser.o string_parser_test.o ../relax/relax.o
+OBJECTS=number_helper.o number_helper_test.o ini_helper.o ini_helper_test.o time_helper.o time_helper_test.o env_helper.o env_helper_test.o string_helper.o string_helper_test.o string_parser.o string_parser_test.o file_helper_test.o  ../relax/relax.o
 BINARY=test.exe
 
 all: $(BINARY)

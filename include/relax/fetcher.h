@@ -10,7 +10,6 @@
 #define RELAX_FETCHER_H_
 
 namespace relax{
-namespace fetcher{
 
 class Curl;
 
@@ -30,6 +29,5 @@ private:
 };
 
 } //relax
-} //utility
 
 #endif//RELAX_FETCHER_H_

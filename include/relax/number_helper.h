@@ -13,7 +13,6 @@
 #include <relax/relax.h>
 
 namespace relax {
-namespace utility {
 
 using std::string;
 
@@ -38,6 +37,5 @@ private:
 };
 
 } //relax
-} //utility
 
 #endif//RELAX_UTILITY_NUMBER_HELPER_H_

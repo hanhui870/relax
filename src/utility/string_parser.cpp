@@ -6,7 +6,6 @@
 #include <Poco/NumberParser.h>
 
 namespace relax {
-namespace utility {
 
 using Poco::Ascii;
 using Poco::NumberParser;
@@ -153,4 +152,3 @@ Status StringParser::ParseConst(string& key, string& value){
 }
 
 } //relax
-} //utility

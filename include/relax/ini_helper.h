@@ -17,7 +17,6 @@
 #include <relax/relax.h>
 
 namespace relax {
-namespace utility {
 
 using std::map;
 using std::string;
@@ -136,6 +135,5 @@ private:
 };
 
 } //relax
-} //utility
 
 #endif//RELAX_UTILITY_INI_HELPER_H_

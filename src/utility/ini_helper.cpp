@@ -17,7 +17,6 @@
 #include <Poco/NumberParser.h>
 
 namespace relax {
-namespace utility {
 
 static string GetNumberText(int num);
 
@@ -496,4 +495,3 @@ static string GetNumberText(int num){
 
 
 } //relax
-} //utility

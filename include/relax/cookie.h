@@ -17,7 +17,6 @@
 #include <relax/relax.h>
 
 namespace relax {
-namespace fetcher {
 
 using std::map;
 using std::string;
@@ -216,7 +215,6 @@ protected:
     string name_;
 };
 
-}//relax
 }//fetcher
 
 #endif//RELAX_FETCHER_COOKIE_H_

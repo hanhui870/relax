@@ -5,7 +5,7 @@
 #include <memory>
 
 using namespace std;
-using namespace relax::utility;
+using namespace relax;
 using relax::Status;
 
 int main(int argc, char **argv){

@@ -9,7 +9,7 @@ TEST(string_parser, common_actions)
 {
     relax::timer t;
 
-    using ::relax::utility::StringParser;
+    using ::relax::StringParser;
     using ::relax::Status;
     //const char* a="'Route'NAME_SEP'Controller'NAME_SEP'Base'";
     //使用 StringParser p("'Route'NAME_SEP'Controller'NAME_SEP'Base'"); original内容会变，因为C++字符串中引号需要完全转义

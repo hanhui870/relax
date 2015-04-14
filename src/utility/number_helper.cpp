@@ -10,7 +10,7 @@
 #include <relax/number_helper.h>
 
 namespace relax {
-namespace utility {
+
 /**
  * 整型转换为字符串
  */
@@ -60,5 +60,4 @@ Status NumberHelper::FloatToString(long double num, string& value){
 }
 
 } //relax
-} //utility
 

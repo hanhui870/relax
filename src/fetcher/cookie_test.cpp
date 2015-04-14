@@ -7,9 +7,7 @@ TEST(cookie, common_actions)
 {
 	relax::timer t;
 
-	using namespace ::relax::fetcher;
-	using ::relax::Status;
-	using ::relax::fetcher::CookieValue;
+	using namespace ::relax;
 	using namespace std;
 	CookieManager& ckm =CookieManager::GetInstance();
 	//空字符

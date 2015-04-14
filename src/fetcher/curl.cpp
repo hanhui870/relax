@@ -8,8 +8,6 @@
 #include <relax/curl.h>
 
 namespace relax {
-namespace fetcher {
-
 using ::std::sprintf;
 
 Curl::Curl() :
@@ -162,5 +160,4 @@ Status Curl::InitCurl() {
 
 std::once_flag Curl::global_inited_;
 
-} //relax
 } //fetcher

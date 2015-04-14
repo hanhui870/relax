@@ -6,7 +6,7 @@ using namespace std;
 
 TEST(env_helper, common_actions)
 {
-    using ::relax::utility::EnvHelper;
+    using ::relax::EnvHelper;
 
     string value;
 
